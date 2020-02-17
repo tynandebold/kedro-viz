@@ -1,4 +1,5 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 import reducer from '../reducers';
 import { saveState } from './helpers';
 
@@ -8,7 +9,11 @@ import { saveState } from './helpers';
  * @return {Object} Redux store
  */
 export default function configureStore(initialState) {
-  const store = createStore(reducer, initialState);
+  const store = createStore(
+    reducer,
+    initialState,
+    applyMiddleware(thunkMiddleware)
+  );
 
   store.subscribe(() => {
     const { textLabels, theme, typeDisabled } = store.getState();

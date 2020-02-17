@@ -45,6 +45,7 @@
     "react-scripts": "^3.3.0",
     "react-test-renderer": "^16.8.6",
     "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "snyk": "^1.290.1",
     "svg-crowbar": "^0.2.4",
