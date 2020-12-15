@@ -14,9 +14,10 @@ import { graphNew, graphDagre } from './graph';
 /**
  * Prime the state object for the testing environment
  * by running the asynchronous actions synchronously
- * @param {Object} props
+ * @param {Object} props Store initialisation props
+ * @param {Array} addActions Additional actions to perform when initializing state
  */
-export const prepareState = props => {
+export const prepareState = (props, addActions = []) => {
   const initialState = getInitialState(props);
   const actions = [
     // Set fontLoaded = true:
@@ -26,7 +27,8 @@ export const prepareState = props => {
       const layout = state.flags.newgraph ? graphNew : graphDagre;
       const graph = layout(getGraphInput(state));
       return updateGraph(graph);
-    }
+    },
+    ...addActions
   ];
   return actions.reduce(
     (state, action) => reducer(state, action(state)),
@@ -51,11 +53,12 @@ export const setup = {
    * Mount a React-Redux Provider wrapper for testing connected components
    * @param {Object} children React component(s)
    * @param {Object} props Store initialisation props
+   * @param {Array} actions Optional actions to perform when initializing state
    */
-  mount: (children, props = {}) => {
+  mount: (children, props = {}, actions) => {
     const initialState = Object.assign(
       {},
-      prepareState({ data: animals, ...props }, props)
+      prepareState({ data: animals, ...props }, actions)
     );
     return mount(
       <Provider store={configureStore(initialState)}>{children}</Provider>
