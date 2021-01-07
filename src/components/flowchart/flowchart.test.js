@@ -1,8 +1,14 @@
 import React from 'react';
+import { zoom } from 'd3-zoom';
 import $ from 'cheerio';
+import { render, fireEvent, createEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import FlowChart, { mapStateToProps, mapDispatchToProps } from './index';
+import FlowChart, {
+  FlowChart as UnconnectedFlowChart,
+  mapStateToProps,
+  mapDispatchToProps
+} from './index';
 import { mockState, setup } from '../../utils/state.mock';
 
 const getNodeIDs = state => state.node.ids;
@@ -10,6 +16,23 @@ const getNodeName = state => state.node.name;
 const getLayerIDs = state => state.layer.ids;
 
 describe('FlowChart', () => {
+  it('updates zoom values on scroll', () => {
+    const onUpdateZoom = jest.fn();
+    const { container } = render(
+      <UnconnectedFlowChart onUpdateZoom={onUpdateZoom} />
+    );
+    const svg = container.querySelector('#pipeline-graph');
+    const event = {
+      type: 'zoom',
+      sourceEvent: null,
+      target: zoom,
+      transform: { k: 1, x: 0, y: 0 }
+    };
+    fireEvent(svg, createEvent('zoom', svg, event));
+    expect(window.foobar).toBe('initZoomBehaviour');
+    expect(onUpdateZoom).toHaveBeenCalled();
+  });
+
   it('renders without crashing', () => {
     const svg = setup.mount(<FlowChart />).find('svg');
     expect(svg.length).toEqual(1);

@@ -199,61 +199,9 @@ export class FlowChart extends Component {
       .interpolate(interpolate)
       // When zoom changes
       .on('zoom', () => {
-        const { k: scale, x, y } = event.transform;
-        const [
-          minScale = 0,
-          maxScale = Infinity
-        ] = this.zoomBehaviour.scaleExtent();
-        const { sidebarWidth, metaSidebarWidth } = this.props.chartSize;
-        const { width = 0, height = 0 } = this.props.graphSize;
-
-        // Limit zoom translate extent: This needs to be recalculated on zoom
-        // as it needs access to the current scale to correctly multiply the
-        // sidebarWidth by the scale to offset it properly
-        const margin = 500;
-        this.zoomBehaviour.translateExtent([
-          [-sidebarWidth / scale - margin, -margin],
-          [width + margin + metaSidebarWidth / scale, height + margin]
-        ]);
-
-        // checks to ensure there are valid x and y values before performing zoom operations
-        if (
-          event.transform.x !== Infinity &&
-          event.transform.y !== Infinity &&
-          !isNaN(event.transform.x) &&
-          !isNaN(event.transform.y)
-        ) {
-          // Transform the <g> that wraps the chart
-          this.el.wrapper.attr('transform', event.transform);
-
-          // Apply animating class to zoom wrapper
-          this.el.wrapper.classed(
-            'pipeline-flowchart__zoom-wrapper--animating',
-            true
-          );
-
-          // Update layer label y positions
-          if (this.el.layerNames) {
-            this.el.layerNames.style('transform', d => {
-              const ty = y + (d.y + d.height / 2) * scale;
-              return `translateY(${ty}px)`;
-            });
-          }
-
-          // Hide the tooltip so it doesn't get misaligned to its node
-          this.hideTooltip();
-
-          // Share the applied zoom state with other components
-          this.props.onUpdateZoom({
-            scale,
-            x,
-            y,
-            applied: true,
-            transition: false,
-            minScale,
-            maxScale
-          });
-        }
+        console.log('zoooom!', event);
+        window.foobar = 'initZoomBehaviour';
+        this.onZoom(event.transform);
       })
       // When zoom ends
       .on('end', () => {
@@ -267,6 +215,60 @@ export class FlowChart extends Component {
       .call(this.zoomBehaviour)
       // Disabled to avoid conflicts with metadata panel triggered zooms
       .on('dblclick.zoom', null);
+  }
+
+  onZoom({ k: scale, x, y }) {
+    // Ensure valid x and y values before performing zoom operations
+    if (!isFinite(x) || !isFinite(y) || isNaN(x) || isNaN(y)) {
+      return;
+    }
+
+    const [
+      minScale = 0,
+      maxScale = Infinity
+    ] = this.zoomBehaviour.scaleExtent();
+    const { sidebarWidth, metaSidebarWidth } = this.props.chartSize;
+    const { width = 0, height = 0 } = this.props.graphSize;
+
+    // Limit zoom translate extent: This needs to be recalculated on zoom
+    // as it needs access to the current scale to correctly multiply the
+    // sidebarWidth by the scale to offset it properly
+    const margin = 500;
+    this.zoomBehaviour.translateExtent([
+      [-sidebarWidth / scale - margin, -margin],
+      [width + margin + metaSidebarWidth / scale, height + margin]
+    ]);
+
+    // Transform the <g> that wraps the chart
+    this.el.wrapper.attr('transform', event.transform);
+
+    // Apply animating class to zoom wrapper
+    this.el.wrapper.classed(
+      'pipeline-flowchart__zoom-wrapper--animating',
+      true
+    );
+
+    // Update layer label y positions
+    if (this.el.layerNames) {
+      this.el.layerNames.style('transform', d => {
+        const ty = y + (d.y + d.height / 2) * scale;
+        return `translateY(${ty}px)`;
+      });
+    }
+
+    // Hide the tooltip so it doesn't get misaligned to its node
+    this.hideTooltip();
+
+    // Share the applied zoom state with other components
+    this.props.onUpdateZoom({
+      scale,
+      x,
+      y,
+      applied: true,
+      transition: false,
+      minScale,
+      maxScale
+    });
   }
 
   /**
@@ -510,6 +512,26 @@ export class FlowChart extends Component {
     );
   }
 }
+
+FlowChart.defaultProps = {
+  centralNode: {},
+  chartSize: {},
+  chartZoom: {},
+  edges: [],
+  graphSize: {},
+  layers: [],
+  linkedNodes: [],
+  nodes: [],
+  nodeActive: {},
+  nodeSelected: {},
+  visibleGraph: {},
+  visibleSidebar: true,
+  tooltip: null,
+  onLoadNodeData: () => {},
+  onToggleNodeHovered: () => {},
+  onUpdateChartSize: () => {},
+  onUpdateZoom: () => {}
+};
 
 // Maintain a single reference to support change detection
 const emptyEdges = [];
