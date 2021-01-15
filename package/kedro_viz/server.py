@@ -55,6 +55,7 @@ from semver import VersionInfo
 from toposort import toposort_flatten
 
 from kedro_viz.utils import wait_for
+import pai
 
 KEDRO_VERSION = VersionInfo.parse(kedro.__version__)
 
@@ -391,15 +392,27 @@ def format_pipeline_data(
         tags.update(node.tags)
         _JSON_NODES[task_id] = {"type": "task", "obj": node}
         if task_id not in nodes:
-            nodes[task_id] = {
-                "type": "task",
-                "id": task_id,
-                "name": getattr(node, "short_name", node.name),
-                "full_name": getattr(node, "_func_name", str(node)),
-                "tags": sorted(node.tags),
-                "pipelines": [pipeline_key],
-            }
-            nodes_list.append(nodes[task_id])
+            if task_id not in nodes:
+                if is_pai_node(node):
+                    nodes[task_id] = {
+                        "type": "task",
+                        "id": task_id,
+                        "name": getattr(node, "short_name", node.name),
+                        "full_name": getattr(node, "_func_name", str(node)),
+                        "tags": sorted(node.tags),
+                        "pipelines": [pipeline_key],
+                        "pai_runs": get_pai_data(node),
+                    }
+                else:
+                    nodes[task_id] = {
+                        "type": "task",
+                        "id": task_id,
+                        "name": getattr(node, "short_name", node.name),
+                        "full_name": getattr(node, "_func_name", str(node)),
+                        "tags": sorted(node.tags),
+                        "pipelines": [pipeline_key],
+                    }
+                nodes_list.append(nodes[task_id])
         else:
             nodes[task_id]["pipelines"].append(pipeline_key)
 
@@ -462,6 +475,25 @@ def format_pipeline_data(
             nodes_list.append(nodes[node_id])
         else:
             nodes[node_id]["pipelines"].append(pipeline_key)
+
+
+def is_pai_node(node):
+    if node.tags:
+        for tag in node.tags:
+            if tag.startswith("pai:"):
+                return True
+            else:
+                return False
+    return False
+
+
+def get_pai_data(node):
+    experiment_name = next(
+        tag.lstrip("pai:") for tag in [tag for tag in node.tags if tag.startswith("pai:")]
+    )
+    node_name = getattr(node, "_func_name", str(node))
+    runs = pai.load_runs(experiment=experiment_name, tags=[node_name])
+    return list(runs["run_id"])
 
 
 def _get_dataset_data_params(namespace: str):
