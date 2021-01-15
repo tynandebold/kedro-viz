@@ -25,7 +25,8 @@ export const createInitialPipelineState = () => ({
     docstring: {},
     parameters: {},
     filepath: {},
-    datasetType: {}
+    datasetType: {},
+    pai_runs: {}
   },
   nodeType: {
     ids: ['task', 'data', 'parameters'],
@@ -50,7 +51,11 @@ export const createInitialPipelineState = () => ({
     ids: [],
     name: {},
     active: {},
-    enabled: {}
+    enabled: {},
+    pai: {
+      ids: [],
+      name: {}
+    }
   }
 });
 
@@ -125,6 +130,7 @@ const addNode = state => node => {
   state.node.parameters[id] = node.parameters;
   state.node.filepath[id] = node.filepath;
   state.node.datasetType[id] = node.datasetType;
+  state.node.pai_runs[id] = node.pai_runs;
 };
 
 /**
@@ -147,9 +153,15 @@ const addEdge = state => ({ source, target }) => {
  * @param {Object} tag - Tag object
  */
 const addTag = state => tag => {
-  const { id } = tag;
+  const { id, name } = tag;
   state.tag.ids.push(id);
-  state.tag.name[id] = tag.name;
+  state.tag.name[id] = name;
+
+  // further add the tag under pai section if it is a pai tag
+  if (name.includes('Pai')) {
+    state.tag.pai.ids.push(id);
+    state.tag.pai.name[id] = name.replace(/Pai:/, '');
+  }
 };
 
 /**

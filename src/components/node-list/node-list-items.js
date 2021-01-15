@@ -195,7 +195,9 @@ export const getGroups = createSelector(
   [state => state.types, state => state.items],
   (nodeTypes, items) => {
     const groups = {};
-    const itemTypes = [...nodeTypes, { id: 'tag' }];
+    const itemTypes = [...nodeTypes, { id: 'tag' }, { id: 'pai' }];
+    console.log('**itemType', itemTypes);
+    console.log('**items', items);
 
     for (const itemType of itemTypes) {
       const itemsOfType = items[itemType.id] || [];
