@@ -21,6 +21,7 @@ const getTextLabels = state => state.textLabels;
 const getFontLoaded = state => state.fontLoaded;
 const getNodeTypeDisabled = state => state.nodeType.disabled;
 const getClickedNode = state => state.node.clicked;
+const getPaiRuns = state => state.node.pai_runs;
 
 /**
  * Gets a map of nodeIds to graph nodes
@@ -72,7 +73,8 @@ export const getNodeData = createSelector(
     getNodeDisabled,
     getNodeDisabledNode,
     getNodeDisabledTag,
-    getNodeTypeDisabled
+    getNodeTypeDisabled,
+    getPaiRuns
   ],
   (
     nodeIDs,
@@ -81,7 +83,8 @@ export const getNodeData = createSelector(
     nodeDisabled,
     nodeDisabledNode,
     nodeDisabledTag,
-    typeDisabled
+    typeDisabled,
+    nodePaiRuns
   ) =>
     nodeIDs
       .sort((a, b) => {
@@ -96,7 +99,8 @@ export const getNodeData = createSelector(
         disabled: nodeDisabled[id],
         disabled_node: Boolean(nodeDisabledNode[id]),
         disabled_tag: nodeDisabledTag[id],
-        disabled_type: Boolean(typeDisabled[nodeType[id]])
+        disabled_type: Boolean(typeDisabled[nodeType[id]]),
+        pai_runs: nodePaiRuns[id]
       }))
 );
 
