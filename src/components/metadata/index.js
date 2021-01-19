@@ -131,6 +131,13 @@ const MetaData = ({ visible = true, metadata, onToggleNodeSelected }) => {
           visible={isTaskNode}
           value={metadata.docstring}
         />
+        <MetaDataRow
+          label="Pai experiments Runs:"
+          commas={false}
+          inline={false}
+          value={metadata.node.pai_runs}
+          limit={10}
+        />
       </dl>
     </div>
   );

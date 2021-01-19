@@ -55,6 +55,12 @@
   font-size: 1.48em;
 }
 
+.pipeline-metadata__label--pai {
+  margin: 1.9em 36px;
+  color: #2eff2e;
+  font-size: 1.48em;
+}
+
 .pipeline-metadata__header {
   display: flex;
   justify-content: space-between;
@@ -101,6 +107,9 @@
   margin-right: auto;
   line-height: 1.5;
   word-break: break-word;
+  &--pai {
+    color: green;
+  }
 }
 
 .pipeline-metadata__value--kind-type,

@@ -19,11 +19,16 @@ const MetaDataRow = ({
   children
 }) => {
   const showList = Array.isArray(value);
+  const isPai = label.includes('Pai');
 
   return (
     visible && (
       <>
-        <dt className="pipeline-metadata__label">{label}</dt>
+        {isPai ? (
+          <dt className="pipeline-metadata__label--pai">{label}</dt>
+        ) : (
+          <dt className="pipeline-metadata__label">{label}</dt>
+        )}
         <dd className="pipeline-metadata__row" data-label={label}>
           {showList && (
             <MetaDataList
@@ -34,6 +39,7 @@ const MetaDataRow = ({
               empty={empty}
               values={value}
               limit={limit}
+              isPai={isPai}
             />
           )}
           {!showList && !children && (

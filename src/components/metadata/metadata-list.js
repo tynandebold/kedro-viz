@@ -13,7 +13,8 @@ const MetaDataList = ({
   empty = '-',
   inline = true,
   commas = true,
-  limit = false
+  limit = false,
+  isPai
 }) => {
   const [expanded, setExpanded] = useState(false);
   const showValues = !expanded && limit ? values.slice(0, limit) : values;
@@ -32,6 +33,7 @@ const MetaDataList = ({
               value={property ? item[property] : item}
               kind={kind}
               empty={empty}
+              isPai={isPai}
             />
           </li>
         ))}
