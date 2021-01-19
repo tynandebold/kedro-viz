@@ -43,13 +43,14 @@ const NodeListProvider = ({
   onToggleTagFilter,
   onToggleTypeDisabled
 }) => {
-  console.log('tags', tags);
   const [searchValue, updateSearchValue] = useState('');
 
-  // filter out pai tags from tags
+  let paiTags = tags.filter(tag => typeof tag.pai !== 'undefined');
 
-  const paiTags = tags.filter(tag => typeof tag.pai !== 'undefined');
-  console.log('sections', sections);
+  // further rename the name of the tags with just the experiment name
+  if (paiTags.length > 0) {
+    paiTags.forEach(paiTag => (paiTag.name = paiTag.pai));
+  }
 
   const items = getFilteredItems({
     nodes,
