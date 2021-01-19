@@ -59,6 +59,7 @@ export const mergeLocalStorage = state => {
  * @param {boolean} applyFixes Whether to override initialState
  */
 export const preparePipelineState = (data, applyFixes) => {
+  if (data) console.log('pipeline data', data);
   const state = mergeLocalStorage(normalizeData(data));
   if (applyFixes) {
     // Use main pipeline if active pipeline from localStorage isn't recognised

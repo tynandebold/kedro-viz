@@ -16,7 +16,8 @@ const NodeListGroups = ({
   onItemChange
 }) => {
   const [collapsed, setCollapsed] = useState(storedState.groupsCollapsed || {});
-
+  console.log('**items', items);
+  console.log('**sections', sections);
   // Collapse/expand node group
   const onToggleGroupCollapsed = typeID => {
     const groupsCollapsed = Object.assign({}, collapsed, {
