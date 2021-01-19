@@ -213,7 +213,8 @@ export const getVisibleNodes = createSelector(
     getNodeSize,
     getNodeLayer,
     getNodeRank,
-    getFontLoaded
+    getFontLoaded,
+    getPaiRuns
   ],
   (
     nodeIDs,
@@ -223,7 +224,8 @@ export const getVisibleNodes = createSelector(
     nodeSize,
     nodeLayer,
     nodeRank,
-    fontLoaded
+    fontLoaded,
+    pai_runs
   ) =>
     fontLoaded
       ? nodeIDs.map(id => ({
@@ -234,6 +236,7 @@ export const getVisibleNodes = createSelector(
           type: nodeType[id],
           layer: nodeLayer[id],
           rank: nodeRank[id],
+          pai_runs: pai_runs[id],
           ...nodeSize[id]
         }))
       : []

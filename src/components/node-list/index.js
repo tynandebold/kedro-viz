@@ -34,6 +34,7 @@ const NodeListProvider = ({
   sections,
   tags,
   tagsEnabled,
+  paiTagsEnabled,
   types,
   onToggleNodesDisabled,
   onToggleNodeSelected,
@@ -42,15 +43,28 @@ const NodeListProvider = ({
   onToggleTagFilter,
   onToggleTypeDisabled
 }) => {
+  console.log('tags', tags);
   const [searchValue, updateSearchValue] = useState('');
+
+  // filter out pai tags from tags
+
+  const paiTags = tags.filter(tag => typeof tag.pai !== 'undefined');
+  console.log('sections', sections);
+
   const items = getFilteredItems({
     nodes,
     tags,
+    paiTags,
     tagsEnabled,
+    paiTagsEnabled,
     nodeSelected,
     searchValue
   });
+
+  console.log('**items in node-list', items);
+
   const groups = getGroups({ types, items });
+  console.log('groups', groups);
 
   const onItemClick = item => {
     if (isTagType(item.type)) {
@@ -154,6 +168,7 @@ const NodeListProvider = ({
 export const mapStateToProps = state => ({
   tags: getTagData(state),
   tagsEnabled: state.tag.enabled,
+  paiTagsEnabled: state.tag.pai.enabled,
   nodes: getGroupedNodes(state),
   nodeSelected: getNodeSelected(state),
   sections: getSections(state),

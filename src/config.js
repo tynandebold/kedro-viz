@@ -35,8 +35,8 @@ export const flags = {
 
 export const sidebar = {
   Categories: {
-    Tags: 'tag'
-    // Paitag: 'paiTag'
+    Tags: 'tag',
+    Experiments: 'paiTags'
   },
   Elements: {
     Nodes: 'task',

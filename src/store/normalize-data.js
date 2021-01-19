@@ -54,7 +54,8 @@ export const createInitialPipelineState = () => ({
     enabled: {},
     pai: {
       ids: [],
-      name: {}
+      name: {},
+      enabled: {}
     }
   }
 });

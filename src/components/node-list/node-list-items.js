@@ -100,6 +100,35 @@ export const getFilteredTags = createSelector(
 );
 
 /**
+ * Return filtered/highlighted pai tags
+ * @param {object} tags List of tags
+ * @param {string} searchValue Search term
+ * @return {object} Grouped tags
+ */
+export const getFilteredPaiTags = createSelector(
+  [state => state.paiTags, state => state.searchValue],
+  (paiTags, searchValue) => {
+    console.log('**paiTags in getFilteredPaiTags', paiTags);
+    return highlightMatch(
+      filterNodes({ paiTag: paiTags }, searchValue),
+      searchValue
+    );
+  }
+);
+
+/**
+ * Return Pai tags items
+ * @param {object} tags List of tags
+ * @param {string} searchValue Search term
+ * @return {object} Grouped tags
+ */
+export const getPaiTags = createSelector(
+  [state => state.tags, state => state.searchValue],
+  (tags, searchValue) =>
+    highlightMatch(filterNodes({ tag: tags }, searchValue), searchValue)
+);
+
+/**
  * Return filtered/highlighted tag list items
  * @param {object} filteredTags List of filtered tags
  * @param {object} tagsEnabled Map of enabled tags
@@ -120,6 +149,31 @@ export const getFilteredTagItems = createSelector(
       disabled: false,
       unset: typeof tagsEnabled[tag.id] === 'undefined',
       checked: tagsEnabled[tag.id] === true
+    }))
+  })
+);
+
+/**
+ * Return filtered/highlighted pai tag list items
+ * @param {object} filteredPaiTags List of filtered pai tags
+ * @param {object} paiTagsEnabled Map of enabled tags
+ * @return {array} Node list items
+ */
+export const getFilteredPaiItems = createSelector(
+  [getFilteredPaiTags, state => state.paiTagsEnabled],
+  (filteredPaiTags, paiTagsEnabled) => ({
+    paiTags: filteredPaiTags.paiTag.map(paiTag => ({
+      ...paiTag,
+      type: 'paiTag',
+      visibleIcon: IndicatorIcon,
+      invisibleIcon: IndicatorOffIcon,
+      active: false,
+      selected: false,
+      faded: false,
+      visible: true,
+      disabled: false,
+      unset: typeof paiTagsEnabled[paiTag.id] === 'undefined',
+      checked: paiTagsEnabled[paiTag.id] === true
     }))
   })
 );
@@ -195,12 +249,18 @@ export const getGroups = createSelector(
   [state => state.types, state => state.items],
   (nodeTypes, items) => {
     const groups = {};
-    const itemTypes = [...nodeTypes, { id: 'tag' }, { id: 'pai' }];
-    console.log('**itemType', itemTypes);
+    const itemTypes = [
+      ...nodeTypes,
+      { id: 'tag' },
+      { id: 'paiTags', name: 'paiTags' },
+      { id: 'paiNodes', name: 'paiNodes' }
+    ];
+    console.log('**itemTypes', itemTypes);
     console.log('**items', items);
 
     for (const itemType of itemTypes) {
       const itemsOfType = items[itemType.id] || [];
+      console.log('**itemType', itemType);
 
       groups[itemType.id] = {
         type: itemType,
@@ -238,12 +298,14 @@ export const getGroups = createSelector(
  * @param {object} tagsEnabled Map of enabled tags
  * @return {array} Node list items
  */
+// note to self: I might need to create a new getFilteredPaiExperiment item
 export const getFilteredItems = createSelector(
-  [getFilteredNodeItems, getFilteredTagItems],
-  (filteredNodeItems, filteredTagItems) => {
+  [getFilteredNodeItems, getFilteredTagItems, getFilteredPaiItems],
+  (filteredNodeItems, filteredTagItems, filteredPaiTagItems) => {
     return {
       ...filteredTagItems,
-      ...filteredNodeItems
+      ...filteredNodeItems,
+      ...filteredPaiTagItems
     };
   }
 );
