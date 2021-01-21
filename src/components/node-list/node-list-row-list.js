@@ -41,6 +41,7 @@ const NodeRowList = ({
         onMouseEnter={() => onItemMouseEnter(item)}
         onMouseLeave={() => onItemMouseLeave(item)}
         onChange={e => onItemChange(item, !e.target.checked)}
+        isPai={item.pai ? true : false}
       />
     ))}
   </ul>
@@ -113,6 +114,7 @@ const NodeRowLazyList = ({
             onMouseEnter={() => onItemMouseEnter(item)}
             onMouseLeave={() => onItemMouseLeave(item)}
             onChange={e => onItemChange(item, !e.target.checked)}
+            isPai={item.pai ? true : false}
           />
         ))}
       </ul>

@@ -74,6 +74,10 @@ $placeholder-fade: 120px;
 
   .pipeline-nodelist__row__label {
     font-weight: bold;
+
+    &--pai {
+      color: green;
+    }
   }
 }
 

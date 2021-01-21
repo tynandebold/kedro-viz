@@ -52,10 +52,10 @@ const NodeListRow = memo(
     selected,
     type,
     visibleIcon = VisibleIcon,
-    invisibleIcon = InvisibleIcon
+    invisibleIcon = InvisibleIcon,
+    isPai
   }) => {
     const VisibilityIcon = checked ? visibleIcon : invisibleIcon;
-
     return (
       <Container
         className={classnames(
@@ -101,7 +101,8 @@ const NodeListRow = memo(
           <span
             className={classnames('pipeline-nodelist__row__label', {
               'pipeline-nodelist__row__label--faded': faded,
-              'pipeline-nodelist__row__label--disabled': disabled
+              'pipeline-nodelist__row__label--disabled': disabled,
+              'pipeline-nodelist__row__label--pai': isPai
             })}
             dangerouslySetInnerHTML={{ __html: label }}
           />

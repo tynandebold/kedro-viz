@@ -141,6 +141,10 @@ export const drawNodes = function(changed) {
       .classed('pipeline-node--parameters', node => node.type === 'parameters')
       .classed('pipeline-node--data', node => node.type === 'data')
       .classed('pipeline-node--task', node => node.type === 'task')
+      .classed(
+        'pipeline-node--pai',
+        node => typeof node.pai_runs !== 'undefined'
+      )
       .on('click', this.handleNodeClick)
       .on('mouseover', this.handleNodeMouseOver)
       .on('mouseout', this.handleNodeMouseOut)

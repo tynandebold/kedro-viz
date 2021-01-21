@@ -103,6 +103,10 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 
+  &--pai {
+    color: green;
+  }
+
   &--faded {
     opacity: 0.65;
   }

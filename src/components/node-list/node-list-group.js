@@ -37,11 +37,14 @@ export const NodeListGroup = ({
         id={id}
         kind={kind}
         name={name}
-        label={`${name} <i>${childCount}</i>`}
+        label={`${
+          name.includes('pai') ? 'Experiments' : name
+        } <i>${childCount}</i>`}
         unset={unset}
         checked={checked}
         visibleIcon={visibleIcon}
         invisibleIcon={invisibleIcon}
+        isPai={name.includes('pai') ? true : false}
         onChange={e => {
           onToggleChecked(id, !e.target.checked);
         }}>
