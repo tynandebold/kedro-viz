@@ -6,12 +6,12 @@ import './styles/metadata.css';
  * Shows a metadata value
  */
 const MetaDataValue = ({
-  container: Container = 'span',
+  isPai,
+  container: Container = isPai ? 'a' : 'span',
   className,
   value,
   kind,
-  empty,
-  isPai
+  empty
 }) => {
   return isPai ? (
     <Container
@@ -20,7 +20,9 @@ const MetaDataValue = ({
         'pipeline-metadata__value--pai',
         { kind },
         className
-      )}>
+      )}
+      href="http://127.0.0.1:5000/"
+      target="_blank">
       {!value && value !== 0 ? empty : value}
     </Container>
   ) : (

@@ -128,20 +128,22 @@ const NodeListRow = memo(
             name={name}
             onChange={onChange}
           />
-          <VisibilityIcon
-            aria-label={name}
-            className={classnames(
-              'pipeline-nodelist__row__icon',
-              'pipeline-row__toggle-icon',
-              `pipeline-row__toggle-icon--kind-${kind}`,
-              {
-                'pipeline-row__toggle-icon--checked': checked,
-                'pipeline-row__toggle-icon--unchecked': !checked,
-                'pipeline-row__toggle-icon--unset': unset,
-                'pipeline-row__toggle-icon--visible': type !== 'tag'
-              }
-            )}
-          />
+          {!label.includes('Experiments') && (
+            <VisibilityIcon
+              aria-label={name}
+              className={classnames(
+                'pipeline-nodelist__row__icon',
+                'pipeline-row__toggle-icon',
+                `pipeline-row__toggle-icon--kind-${kind}`,
+                {
+                  'pipeline-row__toggle-icon--checked': checked,
+                  'pipeline-row__toggle-icon--unchecked': !checked,
+                  'pipeline-row__toggle-icon--unset': unset,
+                  'pipeline-row__toggle-icon--visible': type !== 'tag'
+                }
+              )}
+            />
+          )}
         </label>
       </Container>
     );
