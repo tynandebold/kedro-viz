@@ -6,6 +6,7 @@ import NodeList from '../node-list';
 import PrimaryToolbar from '../primary-toolbar';
 import MiniMapToolbar from '../minimap-toolbar';
 import MiniMap from '../minimap';
+import { Timeline } from '../timeline';
 import './sidebar.css';
 
 /**
@@ -20,7 +21,8 @@ export const Sidebar = ({ visible }) => {
       <div
         className={classnames('pipeline-sidebar', {
           'pipeline-sidebar--visible': visible,
-        })}>
+        })}
+      >
         <div className="pipeline-ui">
           <PipelineList onToggleOpen={togglePipeline} />
           <NodeList faded={pipelineIsOpen} />
@@ -30,6 +32,7 @@ export const Sidebar = ({ visible }) => {
           <MiniMapToolbar />
         </nav>
         <MiniMap />
+        <Timeline />
       </div>
     </>
   );
