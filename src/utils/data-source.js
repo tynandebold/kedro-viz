@@ -1,7 +1,6 @@
 import getRandomPipeline from './random-data';
 import spaceflights from './data/spaceflights.mock.json';
 import demo from './data/demo.mock.json';
-import hackathon from './data/hackathon.mock.json';
 import selectors from './data/selectors.mock.json';
 
 /**
@@ -49,9 +48,6 @@ export const getDataValue = (source) => {
     case 'demo':
       // Use data from the 'demo' test dataset
       return nameSource(demo);
-    case 'hackathon':
-      // Use data from the 'hackathon' test dataset
-      return nameSource(hackathon);
     case 'selectors':
       // Use data from the 'selectors' test dataset
       return nameSource(selectors);
