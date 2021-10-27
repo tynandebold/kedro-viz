@@ -114,6 +114,52 @@ export const Timeline = ({ visible }) => {
       // Add the brushing
       line.append('g').attr('class', 'brush').call(brush);
 
+      let Tooltip = d3
+        .select('#my_dataviz')
+        .append('div')
+        .style('opacity', 0)
+        .attr('class', 'tooltip')
+        .style('background-color', 'white')
+        .style('border', 'solid')
+        .style('border-width', '2px')
+        .style('border-radius', '5px')
+        .style('padding', '5px');
+
+      // Three function that change the tooltip when user hover / move / leave a cell
+      const mouseover = function (d) {
+        Tooltip.style('opacity', 1);
+      };
+      const mousemove = function (d) {
+        Tooltip.html('Exact value: ' + d.value)
+          .style('left', d3.pointer(this)[0] + 70 + 'px')
+          .style('top', d3.pointer(this)[1] + 'px');
+      };
+      const mouseleave = function (d) {
+        Tooltip.style('opacity', 0);
+      };
+
+      // Add the points
+      line
+        .append('g')
+        .selectAll('dot')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('class', 'circles')
+        .attr('cx', function (d) {
+          return x(d.date);
+        })
+        .attr('cy', function (d) {
+          return y(d.value);
+        })
+        .attr('r', 2)
+        .attr('stroke', '#69b3a2')
+        .attr('stroke-width', 3)
+        .attr('fill', 'white')
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseleave', mouseleave);
+
       // A function that set idleTimeOut to null
       let idleTimeout;
       function idled() {
