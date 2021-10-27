@@ -11,6 +11,7 @@ export const GET_RUNS = gql`
         bookmark
         gitSha
         timestamp
+        runNodes
       }
     }
   }

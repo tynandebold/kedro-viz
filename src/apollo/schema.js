@@ -38,6 +38,7 @@ const typeDefs = gql`
     bookmark: Boolean
     notes: String
     runCommand: String
+    runNodes: Int
   }
 
   type RunTrackingData {
