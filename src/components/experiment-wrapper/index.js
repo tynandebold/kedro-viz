@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Sidebar from '../experiment-tracking/sidebar';
 import Details from '../experiment-tracking/details';
+import Timeline from '../experiment-tracking/timeline';
 import { Provider } from '../provider/provider';
 
 /**
@@ -15,7 +16,8 @@ const ExperimentWrapper = () => (
       <Sidebar />
       <Switch>
         <Route path={['/runsList/:id', '/runsList']}>
-          <Details />
+          {/* <Details /> */}
+          <Timeline />
         </Route>
       </Switch>
     </Provider>
