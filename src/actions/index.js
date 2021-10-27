@@ -180,6 +180,19 @@ export function toggleMiniMap(visible) {
   };
 }
 
+export const TOGGLE_TIMELINE = 'TOGGLE_TIMELINE';
+
+/**
+ * Toggle timeline in minimap toolbar
+ * @param {string} visible Visibility status
+ */
+export function toggleTimeline(visible) {
+  return {
+    type: TOGGLE_TIMELINE,
+    visible,
+  };
+}
+
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 
 /**

@@ -33,6 +33,7 @@ export const createInitialState = () => ({
     code: false,
     miniMapBtn: true,
     miniMap: true,
+    timeline: false,
     modularPipelineFocusMode: null,
   },
   zoom: {},

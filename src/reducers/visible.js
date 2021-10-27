@@ -6,6 +6,7 @@ import {
   TOGGLE_SIDEBAR,
   TOGGLE_CODE,
   TOGGLE_MINIMAP,
+  TOGGLE_TIMELINE,
   TOGGLE_MODULAR_PIPELINE_FOCUS_MODE,
 } from '../actions';
 
@@ -44,6 +45,12 @@ function visibleReducer(visibleState = {}, action) {
     case TOGGLE_MINIMAP: {
       return Object.assign({}, visibleState, {
         miniMap: action.visible,
+      });
+    }
+
+    case TOGGLE_TIMELINE: {
+      return Object.assign({}, visibleState, {
+        timeline: action.visible,
       });
     }
 

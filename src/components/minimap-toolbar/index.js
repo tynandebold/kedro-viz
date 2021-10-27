@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleMiniMap, updateZoom } from '../../actions';
+import { toggleMiniMap, toggleTimeline, updateZoom } from '../../actions';
 import { getChartZoom } from '../../selectors/layout';
 import IconButton from '../icon-button';
 import MapIcon from '../icons/map';
@@ -14,6 +14,7 @@ import './minimap-toolbar.css';
  */
 export const MiniMapToolbar = ({
   onToggleMiniMap,
+  onToggleTimeline,
   visible,
   chartZoom,
   onUpdateChartZoom,
@@ -27,10 +28,27 @@ export const MiniMapToolbar = ({
           icon={MapIcon}
           className={'pipeline-minimap-button pipeline-minimap-button--map'}
           ariaLabel={`Turn minimap ${visible.miniMap ? 'off' : 'on'}`}
-          onClick={() => onToggleMiniMap(!visible.miniMap)}
+          onClick={() => {
+            onToggleMiniMap(!visible.miniMap);
+            onToggleTimeline(false);
+          }}
           labelText={`${visible.miniMap ? 'Hide' : 'Show'} minimap`}
           visible={visible.miniMapBtn}
           active={visible.miniMap}
+        />
+        <IconButton
+          icon={MapIcon}
+          className={
+            'pipeline-minimap-button pipeline-minimap-button--timeline'
+          }
+          ariaLabel={`Turn timeline ${visible.timeline ? 'off' : 'on'}`}
+          onClick={() => {
+            onToggleTimeline(!visible.timeline);
+            onToggleMiniMap(false);
+          }}
+          labelText={`${visible.timeline ? 'Hide' : 'Show'} timeline`}
+          visible={visible.miniMapBtn}
+          active={visible.timeline}
         />
         <IconButton
           icon={PlusIcon}
@@ -85,6 +103,9 @@ export const mapStateToProps = (state) => ({
 export const mapDispatchToProps = (dispatch) => ({
   onToggleMiniMap: (value) => {
     dispatch(toggleMiniMap(value));
+  },
+  onToggleTimeline: (value) => {
+    dispatch(toggleTimeline(value));
   },
   onUpdateChartZoom: (transform) => {
     dispatch(updateZoom(transform));
