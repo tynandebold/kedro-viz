@@ -1,0 +1,27 @@
+@import '../minimap/styles/variables';
+@import '../minimap/styles/node';
+
+.pipeline-timeline-container {
+  $offsetBottom: 2px; /* Sub-pixel adjustment */
+  $leftArea: 480px;
+  position: absolute;
+  top: calc(100% + #{$offsetBottom});
+  left: 100%;
+  width: calc(100vw - #{$leftArea});
+  height: 222px;
+  background: var(--minimap-bg);
+  box-shadow: 0 0 2px var(--minimap-shadow);
+  transform: translate(-100%, -100%);
+  transition: transform 500ms ease;
+  border: 1px solid var(--minimap-viewport-stroke);
+}
+
+.pipeline-timeline__graph {
+  display: block;
+}
+
+.pipeline-timeline {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
