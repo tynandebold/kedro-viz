@@ -7,6 +7,7 @@ import MapIcon from '../icons/map';
 import PlusIcon from '../icons/plus';
 import MinusIcon from '../icons/minus';
 import ResetIcon from '../icons/reset';
+import TimelineIcon from '../icons/timeline';
 import './minimap-toolbar.css';
 
 /**
@@ -37,7 +38,7 @@ export const MiniMapToolbar = ({
           active={visible.miniMap}
         />
         <IconButton
-          icon={MapIcon}
+          icon={TimelineIcon}
           className={
             'pipeline-minimap-button pipeline-minimap-button--timeline'
           }
