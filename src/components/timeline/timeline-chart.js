@@ -117,17 +117,23 @@ export const TimelineChart = ({ data }) => {
     tooltip.transition().duration(200);
 
     tooltip
+      .html(
+        'Nodes: ' +
+          d.value +
+          '<br />Run: ' +
+          d.title +
+          '<br /><button id="show-pipeline">Show pipeline</button>'
+      )
       .style('opacity', 1)
       .style('color', '#000')
-      .html('Nodes: ' + d.value + '<br />Run: ' + d.title)
       .style('left', x(d.date) + 10.5 + 'px')
-      .style('top', 118 + 'px');
+      .style('top', 101 + 'px');
 
-    d3.select(this)
-      .transition()
-      .duration(175)
-      .attr('r', 8)
-      .style('cursor', 'pointer');
+    d3.select('#show-pipeline').on('click', function () {
+      alert(d.id);
+    });
+
+    d3.select(this).transition().duration(175).attr('r', 8);
   };
 
   // const moveTooltip = function (event, d) {
