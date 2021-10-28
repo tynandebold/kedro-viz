@@ -79,7 +79,7 @@ export const TimelineChart = ({ data, updatePipeline }) => {
     .datum(data)
     .attr('class', 'line-1') // Add class to be able to modify line later on.
     .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
+    .attr('stroke', '#00b0f5')
     .attr('stroke-width', 1.5)
     .attr(
       'd',
@@ -220,6 +220,36 @@ export const TimelineChart = ({ data, updatePipeline }) => {
     tooltip.style('opacity', 0).style('pointer-events', 'none');
     d3.selectAll('.circle').transition().duration(175).attr('r', 3);
   });
+
+  // Legend
+  svg
+    .append('circle')
+    .attr('cx', width - 200)
+    .attr('cy', 5)
+    .attr('r', 6)
+    .style('fill', '#00b0f5');
+  svg
+    .append('circle')
+    .attr('cx', width - 90)
+    .attr('cy', 5)
+    .attr('r', 6)
+    .style('fill', '#ffbc00');
+  svg
+    .append('text')
+    .attr('x', width - 185)
+    .attr('y', 6)
+    .text('Total nodes')
+    .style('font-size', '12px')
+    .style('fill', 'white')
+    .attr('alignment-baseline', 'middle');
+  svg
+    .append('text')
+    .attr('x', width - 75)
+    .attr('y', 6)
+    .text('Selected nodes')
+    .style('font-size', '12px')
+    .style('fill', 'white')
+    .attr('alignment-baseline', 'middle');
 
   return <div id="timeline-chart"></div>;
 };
