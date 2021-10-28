@@ -27,6 +27,9 @@
 # limitations under the License.
 """`kedro_viz.api.router` defines routes and handling logic for the API."""
 # pylint: disable=missing-function-docstring
+import json
+from pathlib import Path
+
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
@@ -115,3 +118,14 @@ async def get_single_pipeline_data(registered_pipeline_id: str):
         selected_pipeline=registered_pipeline_id,
         modular_pipelines=modular_pipelines_tree,
     )
+
+
+@router.get(
+    "/timemachine/{run_id}",
+    response_model=GraphAPIResponse,
+)
+async def get_single_pipeline_data(run_id: str):
+    load_file = Path.cwd() / f"data/pipelines/{run_id}.json"
+    json_data = json.loads(Path(load_file).read_text())
+    return JSONResponse(status_code=200, content=json_data)
+
