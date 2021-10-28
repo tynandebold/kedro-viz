@@ -20,8 +20,6 @@ export const TimelineChart = ({ data }) => {
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  //Read the data
-
   // Add X axis --> it is a date format
   const x = d3
     .scaleTime()
@@ -52,7 +50,7 @@ export const TimelineChart = ({ data }) => {
   svg.append('g').call(d3.axisLeft(y));
 
   // Add a clipPath: everything out of this area won't be drawn.
-  const clip = svg
+  svg
     .append('defs')
     .append('svg:clipPath')
     .attr('id', 'clip')
@@ -78,7 +76,7 @@ export const TimelineChart = ({ data }) => {
   line
     .append('path')
     .datum(data)
-    .attr('class', 'line') // I add the class line to be able to modify this line later on.
+    .attr('class', 'line') // Add class to be able to modify line later on.
     .attr('fill', 'none')
     .attr('stroke', 'steelblue')
     .attr('stroke-width', 1.5)
@@ -128,7 +126,7 @@ export const TimelineChart = ({ data }) => {
     .data(data)
     .enter()
     .append('circle')
-    .attr('class', 'circles')
+    .attr('class', 'circle')
     .attr('cx', function (d) {
       return x(d.date);
     })
@@ -168,37 +166,8 @@ export const TimelineChart = ({ data }) => {
     // Update axis and line position
     xAxis.transition().duration(1000).call(d3.axisBottom(x));
 
-    line
-      .select('.line')
-      .transition()
-      .duration(1000)
-      .attr(
-        'd',
-        d3
-          .line()
-          .x(function (d) {
-            return x(d.date);
-          })
-          .y(function (d) {
-            return y(d.value);
-          })
-      );
-
-    line
-      .select('.line')
-      .transition()
-      .duration(1000)
-      .attr(
-        'd',
-        d3
-          .line()
-          .x(function (d) {
-            return x(d.date);
-          })
-          .y(function (d) {
-            return y(d.value);
-          })
-      );
+    redrawLine(line, 1000, x, y);
+    redrawCircles(line, 1000, x, y);
   }
 
   // If user double click, reinitialize the chart
@@ -208,24 +177,45 @@ export const TimelineChart = ({ data }) => {
         return d.date;
       })
     );
-    xAxis.transition().call(d3.axisBottom(x));
-    line
-      .select('.line')
-      .transition()
-      .attr(
-        'd',
-        d3
-          .line()
-          .x(function (d) {
-            return x(d.date);
-          })
-          .y(function (d) {
-            return y(d.value);
-          })
-      );
+
+    xAxis.transition().duration(0).call(d3.axisBottom(x));
+
+    redrawLine(line, 0, x, y);
+    redrawCircles(line, 0, x, y);
   });
 
   return <div id="timeline-chart"></div>;
 };
+
+function redrawLine(line, duration, x, y) {
+  line
+    .select('.line')
+    .transition()
+    .duration(duration)
+    .attr(
+      'd',
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.value);
+        })
+    );
+}
+
+function redrawCircles(line, duration, x, y) {
+  line
+    .selectAll('.circle')
+    .transition()
+    .duration(duration)
+    .attr('cx', function (d) {
+      return x(d.date);
+    })
+    .attr('cy', function (d) {
+      return y(d.value);
+    });
+}
 
 export default TimelineChart;
