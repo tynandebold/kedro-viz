@@ -2,12 +2,11 @@ import React from 'react';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
 
-const height = 300;
 const leftArea = 480;
 
 export const TimelineChart = ({ data }) => {
   // set the dimensions and margins of the graph
-  const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+  const margin = { top: 10, right: 30, bottom: 30, left: 30 },
     width = window.innerWidth - leftArea - margin.left - margin.right,
     height = 222 - margin.top - margin.bottom;
 
@@ -15,7 +14,7 @@ export const TimelineChart = ({ data }) => {
 
   // append the svg object to the body of the page
   const svg = d3
-    .select('#my_dataviz')
+    .select('#timeline-chart')
     .append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
@@ -33,6 +32,7 @@ export const TimelineChart = ({ data }) => {
       })
     )
     .range([0, width]);
+
   xAxis = svg
     .append('g')
     .attr('transform', `translate(0, ${height})`)
@@ -42,9 +42,11 @@ export const TimelineChart = ({ data }) => {
   const y = d3
     .scaleLinear()
     .domain([
-      0,
+      d3.min(data, function (d) {
+        return +d.value - 5;
+      }),
       d3.max(data, function (d) {
-        return +d.value;
+        return +d.value + 5;
       }),
     ])
     .range([height, 0]);
@@ -97,7 +99,7 @@ export const TimelineChart = ({ data }) => {
   line.append('g').attr('class', 'brush').call(brush);
 
   let Tooltip = d3
-    .select('#my_dataviz')
+    .select('#timeline-chart')
     .append('div')
     .style('opacity', 0)
     .attr('class', 'tooltip')
@@ -166,6 +168,7 @@ export const TimelineChart = ({ data }) => {
 
     // Update axis and line position
     xAxis.transition().duration(1000).call(d3.axisBottom(x));
+
     line
       .select('.line')
       .transition()
@@ -223,7 +226,7 @@ export const TimelineChart = ({ data }) => {
       );
   });
 
-  return <div id="my_dataviz"></div>;
+  return <div id="timeline-chart"></div>;
 };
 
 export default TimelineChart;

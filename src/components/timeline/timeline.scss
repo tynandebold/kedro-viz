@@ -13,7 +13,6 @@
   box-shadow: 0 0 2px var(--minimap-shadow);
   transform: translate(-100%, -100%);
   transition: transform 500ms ease;
-  border: 1px solid var(--minimap-viewport-stroke);
 }
 
 .pipeline-timeline__graph {
@@ -24,4 +23,15 @@
   position: absolute;
   top: 0;
   right: 0;
+}
+
+#timeline-chart {
+  background: var(--minimap-bg);
+  border: 1px solid var(--minimap-viewport-stroke);
+  box-shadow: 0 0 2px var(--minimap-shadow);
+  height: 215px;
+  left: 5px;
+  position: absolute;
+  top: 0;
+  width: calc(100vw - 490px);
 }
