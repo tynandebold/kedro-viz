@@ -12,10 +12,14 @@ export const MetaDataMock = Factory.define(({ sequence }) => ({
   notes: faker.random.words(10),
   timestamp: faker.date.between('2020-12-01', '2021-10-05'),
   runCommand: faker.random.words(5),
-  runNodes: faker.datatype.number({
-    min: 60,
+  totalNodes: faker.datatype.number({
+    min: 65,
     max: 75,
   }),
+  selectedNodes: faker.datatype.number({
+    min: 20,
+    max: 65,
+  }), // max selected nodes will set to minimum of totalNodes
 }));
 
 export const TrackingDataMock = Factory.define(({ sequence }) => ({
@@ -43,7 +47,7 @@ export const runsQueryMock = {
   },
   result: {
     data: {
-      runsList: RunMock.buildList(50),
+      runsList: RunMock.buildList(150),
     },
   },
 };
