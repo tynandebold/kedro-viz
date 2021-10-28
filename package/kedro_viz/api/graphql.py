@@ -69,7 +69,7 @@ def format_run(run_id: str, run_blob: dict) -> Run:
         totalNodes=run_blob["total_nodes"],
         selectedNodes=run_blob["selected_nodes"],
     )
-    tracking_data = RunTrackingData(id=ID(run_id), trackingData=None)
+    tracking_data = get_run_tracking_data(run_id=ID(run_id))
 
     return Run(
         id=ID(run_id),
