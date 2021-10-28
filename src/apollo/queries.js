@@ -4,14 +4,12 @@ import gql from 'graphql-tag';
 export const GET_RUNS = gql`
   query getRunsList {
     runsList {
-      runId
-      metaData {
-        runId
+      id
+      metadata {
         title
-        bookmark
-        gitSha
         timestamp
-        runNodes
+        totalNodes
+        selectedNodes
       }
     }
   }

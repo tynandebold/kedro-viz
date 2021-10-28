@@ -125,7 +125,7 @@ async def get_single_pipeline_data(registered_pipeline_id: str):
     response_model=GraphAPIResponse,
 )
 async def get_single_pipeline_data(run_id: str):
-    load_file = Path.cwd() / f"data/pipelines/{run_id}.json"
+    load_file =  f"/Users/susanna_wong/Documents/project-src/test-projects/time-machine-demo/data/pipelines/{run_id}.json"
     json_data = json.loads(Path(load_file).read_text())
     return JSONResponse(status_code=200, content=json_data)
 

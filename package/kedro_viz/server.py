@@ -107,7 +107,7 @@ def run_server(
             if pipeline_name is None
             else {pipeline_name: pipelines[pipeline_name]}
         )
-        populate_data(data_access_manager, catalog, pipelines, session_store_location)
+        populate_data(data_access_manager, catalog, pipelines, '/Users/susanna_wong/Documents/project-src/test-projects/time-machine-demo/data/session_store.db')
         if save_file:
             res = responses.get_default_response()
             Path(save_file).write_text(res.json(indent=4, sort_keys=True))
