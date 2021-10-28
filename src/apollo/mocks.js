@@ -12,6 +12,8 @@ export const MetaDataMock = Factory.define(({ sequence }) => ({
   notes: faker.random.words(10),
   timestamp: faker.date.past(),
   runCommand: faker.random.words(5),
+  totalNodes: faker.datatype.number(),
+  selectedNodes: faker.datatype.number(),
 }));
 
 export const TrackingDataMock = Factory.define(({ sequence }) => ({
@@ -39,7 +41,7 @@ export const runsQueryMock = {
   },
   result: {
     data: {
-      runsList: RunMock.buildList(10),
+      runsList: RunMock.buildList(150),
     },
   },
 };
