@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 
 const leftArea = 480;
 
-export const TimelineChart = ({ data }) => {
+export const TimelineChart = ({ data, updatePipeline }) => {
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 30 },
     width = window.innerWidth - leftArea - margin.left - margin.right,
@@ -40,13 +40,14 @@ export const TimelineChart = ({ data }) => {
     .scaleLinear()
     .domain([
       d3.min(data, function (d) {
-        return +d.value - 5;
+        return +d.selectedNodes - 5;
       }),
       d3.max(data, function (d) {
-        return +d.value + 5;
+        return +d.totalNodes + 5;
       }),
     ])
     .range([height, 0]);
+
   svg.append('g').call(d3.axisLeft(y));
 
   // Add a clipPath: everything out of this area won't be drawn.
@@ -72,13 +73,13 @@ export const TimelineChart = ({ data }) => {
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g').attr('clip-path', 'url(#clip)');
 
-  // Add the line
+  // Total nodes line
   line
     .append('path')
     .datum(data)
-    .attr('class', 'line') // Add class to be able to modify line later on.
+    .attr('class', 'line-1') // Add class to be able to modify line later on.
     .attr('fill', 'none')
-    .attr('stroke', 'steelblue')
+    .attr('stroke', '#00b0f5')
     .attr('stroke-width', 1.5)
     .attr(
       'd',
@@ -88,39 +89,72 @@ export const TimelineChart = ({ data }) => {
           return x(d.date);
         })
         .y(function (d) {
-          return y(d.value);
+          return y(d.totalNodes);
+        })
+    );
+
+  // Selected nodes line
+  line
+    .append('path')
+    .datum(data)
+    .attr('class', 'line-2') // Add class to be able to modify line later on.
+    .attr('fill', 'none')
+    .attr('stroke', '#ffbc00')
+    .attr('stroke-width', 1.5)
+    .attr(
+      'd',
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.selectedNodes);
         })
     );
 
   // Add the brushing
   line.append('g').attr('class', 'brush').call(brush);
 
-  let Tooltip = d3
+  const tooltip = d3
     .select('#timeline-chart')
     .append('div')
     .style('opacity', 0)
     .attr('class', 'tooltip')
     .style('background-color', 'white')
-    .style('border', 'solid')
-    .style('border-width', '2px')
-    .style('border-radius', '5px')
-    .style('padding', '5px');
+    .style('padding', '10px')
+    .style('position', 'absolute')
+    .style('font-size', '12px')
+    .style('color', 'white');
 
-  // Three function that change the tooltip when user hover / move / leave a cell
-  const mouseover = function (d) {
-    Tooltip.style('opacity', 1);
-  };
-  const mousemove = function (d) {
-    Tooltip.html('Exact value: ' + d.value)
-      .style('left', d3.pointer(this)[0] + 70 + 'px')
-      .style('top', d3.pointer(this)[1] + 'px');
-  };
-  const mouseleave = function (d) {
-    Tooltip.style('opacity', 0);
+  const showTooltip = function (event, d) {
+    d3.selectAll('.circle').transition().duration(175).attr('r', 3);
+
+    tooltip
+      .html(
+        'Nodes: ' +
+          d.totalNodes +
+          '<br />Run: ' +
+          d.title +
+          '<br /><button id="show-pipeline">Show pipeline</button>'
+      )
+      .transition()
+      .duration(200)
+      .style('opacity', 1)
+      .style('color', '#000')
+      .style('pointer-events', 'all')
+      .style('left', x(d.date) + 10.5 + 'px')
+      .style('top', 101 + 'px');
+
+    d3.select('#show-pipeline').on('click', function () {
+      updatePipeline(d.id);
+    });
+
+    d3.select(this).transition().duration(175).attr('r', 8);
   };
 
   // Add the points
-  line
+  svg
     .append('g')
     .selectAll('dot')
     .data(data)
@@ -130,16 +164,12 @@ export const TimelineChart = ({ data }) => {
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', function (d) {
-      return y(d.value);
-    })
-    .attr('r', 2)
+    .attr('cy', height) // OR function (d) { return y(d.totalNodes); }
+    .attr('r', 3)
     .attr('stroke', '#69b3a2')
     .attr('stroke-width', 3)
-    .attr('fill', 'white')
-    .on('mouseover', mouseover)
-    .on('mousemove', mousemove)
-    .on('mouseleave', mouseleave);
+    .attr('fill', '#fff')
+    .on('mouseover', showTooltip);
 
   // A function that set idleTimeOut to null
   let idleTimeout;
@@ -148,7 +178,7 @@ export const TimelineChart = ({ data }) => {
   }
 
   // A function that update the chart for given boundaries
-  function updateChart(event, d) {
+  function updateChart(event) {
     // What are the selected boundaries?
     const extent = event.selection;
 
@@ -167,7 +197,9 @@ export const TimelineChart = ({ data }) => {
     xAxis.transition().duration(1000).call(d3.axisBottom(x));
 
     redrawLine(line, 1000, x, y);
-    redrawCircles(line, 1000, x, y);
+    redrawCircles(svg, 1000, x, height);
+
+    tooltip.style('opacity', 0);
   }
 
   // If user double click, reinitialize the chart
@@ -181,15 +213,50 @@ export const TimelineChart = ({ data }) => {
     xAxis.transition().duration(0).call(d3.axisBottom(x));
 
     redrawLine(line, 0, x, y);
-    redrawCircles(line, 0, x, y);
+    redrawCircles(svg, 0, x, height);
   });
+
+  svg.on('click', function () {
+    tooltip.style('opacity', 0).style('pointer-events', 'none');
+    d3.selectAll('.circle').transition().duration(175).attr('r', 3);
+  });
+
+  // Legend
+  svg
+    .append('circle')
+    .attr('cx', width - 200)
+    .attr('cy', 5)
+    .attr('r', 6)
+    .style('fill', '#00b0f5');
+  svg
+    .append('circle')
+    .attr('cx', width - 90)
+    .attr('cy', 5)
+    .attr('r', 6)
+    .style('fill', '#ffbc00');
+  svg
+    .append('text')
+    .attr('x', width - 185)
+    .attr('y', 6)
+    .text('Total nodes')
+    .style('font-size', '12px')
+    .style('fill', 'white')
+    .attr('alignment-baseline', 'middle');
+  svg
+    .append('text')
+    .attr('x', width - 75)
+    .attr('y', 6)
+    .text('Selected nodes')
+    .style('font-size', '12px')
+    .style('fill', 'white')
+    .attr('alignment-baseline', 'middle');
 
   return <div id="timeline-chart"></div>;
 };
 
 function redrawLine(line, duration, x, y) {
   line
-    .select('.line')
+    .select('.line-1')
     .transition()
     .duration(duration)
     .attr(
@@ -200,22 +267,37 @@ function redrawLine(line, duration, x, y) {
           return x(d.date);
         })
         .y(function (d) {
-          return y(d.value);
+          return y(d.totalNodes);
+        })
+    );
+
+  line
+    .select('.line-2')
+    .transition()
+    .duration(duration)
+    .attr(
+      'd',
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.selectedNodes);
         })
     );
 }
 
-function redrawCircles(line, duration, x, y) {
-  line
+function redrawCircles(svg, duration, x, height) {
+  svg
     .selectAll('.circle')
     .transition()
     .duration(duration)
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', function (d) {
-      return y(d.value);
-    });
+    .attr('cy', height)
+    .attr('r', 3);
 }
 
 export default TimelineChart;

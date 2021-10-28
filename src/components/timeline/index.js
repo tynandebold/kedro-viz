@@ -8,14 +8,22 @@ import './timeline.css';
 
 const leftArea = 480;
 
-export const Timeline = ({ visible }) => {
+export const Timeline = ({ pipelineId, visible }) => {
   const { data } = useQuery(GET_RUNS);
 
+  // const updatePipeline = (id) => {
+  //   console.log(id);
+  // };
+
+  console.log('data', data);
   // extract the data and no. of nodes from the data
   const plotData = data
     ? data.runsList.map((run) => ({
         date: new Date(run.metadata.timestamp.slice(0, -5).replace(/\./g, ':')),
-        value: run.metadata.selectedNodes,
+        id: run.metadata.id,
+        title: run.metadata.title,
+        selectedNodes: run.metadata.selectedNodes,
+        totalNodes: run.metadata.totalNodes,
       }))
     : [];
 
@@ -31,12 +39,15 @@ export const Timeline = ({ visible }) => {
       style={visible ? transformStyle : {}}
     >
       <TimelineChart data={plotData} />
+      <span>{pipelineId}</span>
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  visible: state.visible.timeline,
-});
+const mapStateToProps = (state) => {
+  return {
+    visible: state.visible.timeline,
+  };
+};
 
 export default connect(mapStateToProps)(Timeline);
