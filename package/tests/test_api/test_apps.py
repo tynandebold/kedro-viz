@@ -33,12 +33,8 @@ from unittest.mock import PropertyMock
 
 import pytest
 from fastapi.testclient import TestClient
-from kedro.io import DataCatalog
-from kedro.pipeline import Pipeline
 
 from kedro_viz.api import apps
-from kedro_viz.api.graphql import schema
-from kedro_viz.data_access.managers import DataAccessManager
 from kedro_viz.models.graph import TaskNode
 from kedro_viz.server import populate_data
 

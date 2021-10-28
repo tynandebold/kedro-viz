@@ -31,6 +31,7 @@ load data from projects created in a range of Kedro versions.
 """
 # pylint: disable=import-outside-toplevel
 # pylint: disable=protected-access
+# pylint: disable=too-many-return-statements
 from pathlib import Path
 from typing import Dict, Optional, Tuple, cast
 
@@ -38,6 +39,8 @@ from kedro import __version__
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from semver import VersionInfo
+
+from kedro_viz.integrations.kedro.sqlite_store import SQLiteStore
 
 KEDRO_VERSION = VersionInfo.parse(__version__)
 
