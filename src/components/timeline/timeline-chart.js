@@ -40,10 +40,10 @@ export const TimelineChart = ({ data, updatePipeline }) => {
     .scaleLinear()
     .domain([
       d3.min(data, function (d) {
-        return +d.value - 5;
+        return +d.selectedNodes - 5;
       }),
       d3.max(data, function (d) {
-        return +d.value + 5;
+        return +d.totalNodes + 5;
       }),
     ])
     .range([height, 0]);
@@ -73,11 +73,11 @@ export const TimelineChart = ({ data, updatePipeline }) => {
   // Create the line variable: where both the line and the brush take place
   const line = svg.append('g').attr('clip-path', 'url(#clip)');
 
-  // Add the line
+  // Total nodes line
   line
     .append('path')
     .datum(data)
-    .attr('class', 'line') // Add class to be able to modify line later on.
+    .attr('class', 'line-1') // Add class to be able to modify line later on.
     .attr('fill', 'none')
     .attr('stroke', 'steelblue')
     .attr('stroke-width', 1.5)
@@ -89,7 +89,27 @@ export const TimelineChart = ({ data, updatePipeline }) => {
           return x(d.date);
         })
         .y(function (d) {
-          return y(d.value);
+          return y(d.totalNodes);
+        })
+    );
+
+  // Selected nodes line
+  line
+    .append('path')
+    .datum(data)
+    .attr('class', 'line-2') // Add class to be able to modify line later on.
+    .attr('fill', 'none')
+    .attr('stroke', '#ffbc00')
+    .attr('stroke-width', 1.5)
+    .attr(
+      'd',
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.selectedNodes);
         })
     );
 
@@ -113,7 +133,7 @@ export const TimelineChart = ({ data, updatePipeline }) => {
     tooltip
       .html(
         'Nodes: ' +
-          d.value +
+          d.totalNodes +
           '<br />Run: ' +
           d.title +
           '<br /><button id="show-pipeline">Show pipeline</button>'
@@ -144,7 +164,7 @@ export const TimelineChart = ({ data, updatePipeline }) => {
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', height) // OR function (d) { return y(d.value); }
+    .attr('cy', height) // OR function (d) { return y(d.totalNodes); }
     .attr('r', 3)
     .attr('stroke', '#69b3a2')
     .attr('stroke-width', 3)
@@ -206,7 +226,7 @@ export const TimelineChart = ({ data, updatePipeline }) => {
 
 function redrawLine(line, duration, x, y) {
   line
-    .select('.line')
+    .select('.line-1')
     .transition()
     .duration(duration)
     .attr(
@@ -217,7 +237,23 @@ function redrawLine(line, duration, x, y) {
           return x(d.date);
         })
         .y(function (d) {
-          return y(d.value);
+          return y(d.totalNodes);
+        })
+    );
+
+  line
+    .select('.line-2')
+    .transition()
+    .duration(duration)
+    .attr(
+      'd',
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.selectedNodes);
         })
     );
 }

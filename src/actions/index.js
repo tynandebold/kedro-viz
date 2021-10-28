@@ -128,16 +128,6 @@ export function toggleTheme(theme) {
   };
 }
 
-export const UPDATE_PIPELINE_ID = 'UPDATE_PIPELINE_ID';
-
-export function updatePipelineId(id) {
-  console.log('id: ', id);
-  return {
-    type: UPDATE_PIPELINE_ID,
-    id,
-  };
-}
-
 export const UPDATE_CHART_SIZE = 'UPDATE_CHART_SIZE';
 
 /**
