@@ -11,11 +11,13 @@ const leftArea = 480;
 export const Timeline = ({ visible }) => {
   const { data } = useQuery(GET_RUNS);
 
+  console.log('data', data);
+
   // extract the data and no. of nodes from the data
   const plotData = data
     ? data.runsList.map((run) => ({
         date: run.metaData.timestamp,
-        value: run.metaData.runNodes,
+        value: run.metaData.selectedNodes,
       }))
     : [];
 

@@ -17,7 +17,7 @@ export const MetaDataMock = Factory.define(({ sequence }) => ({
     max: 75,
   }),
   selectedNodes: faker.datatype.number({
-    min: 20,
+    min: 40,
     max: 65,
   }), // max selected nodes will set to minimum of totalNodes
 }));

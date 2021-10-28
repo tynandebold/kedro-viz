@@ -3,14 +3,16 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
 const link = createHttpLink({
   /** our graphql endpoint */
-  uri: 'http://localhost:4142/',
+  uri: 'localhost:4142/graphql',
   fetch,
 });
 
 export const client = new ApolloClient({
   connectToDevTools: true,
-  link,
+  uri: 'http://localhost:4142/graphql',
+  // link,
   cache: new InMemoryCache(),
+  credentials: 'include',
   resolvers: {},
   defaultOptions: {
     query: {
