@@ -126,6 +126,7 @@ export const TimelineChart = ({ data }) => {
       .duration(200)
       .style('opacity', 1)
       .style('color', '#000')
+      .style('pointer-events', 'all')
       .style('left', x(d.date) + 10.5 + 'px')
       .style('top', 101 + 'px');
 
@@ -203,7 +204,7 @@ export const TimelineChart = ({ data }) => {
   });
 
   svg.on('click', function () {
-    tooltip.style('opacity', 0);
+    tooltip.style('opacity', 0).style('pointer-events', 'none');
     d3.selectAll('.circle').transition().duration(175).attr('r', 3);
   });
 
