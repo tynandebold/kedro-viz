@@ -15,6 +15,8 @@ export const Timeline = ({ visible }) => {
   const plotData = data
     ? data.runsList.map((run) => ({
         date: run.metaData.timestamp,
+        id: run.metaData.runId,
+        title: run.metaData.title,
         value: run.metaData.runNodes,
       }))
     : [];

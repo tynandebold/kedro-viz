@@ -4,6 +4,10 @@ import * as d3 from 'd3';
 const leftArea = 480;
 
 export const TimelineChart = ({ data }) => {
+  function showPipeline(id) {
+    console.log(id);
+  }
+
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 30 },
     width = window.innerWidth - leftArea - margin.left - margin.right,
@@ -47,6 +51,7 @@ export const TimelineChart = ({ data }) => {
       }),
     ])
     .range([height, 0]);
+
   svg.append('g').call(d3.axisLeft(y));
 
   // Add a clipPath: everything out of this area won't be drawn.
@@ -95,32 +100,48 @@ export const TimelineChart = ({ data }) => {
   // Add the brushing
   line.append('g').attr('class', 'brush').call(brush);
 
-  let Tooltip = d3
+  const tooltip = d3
     .select('#timeline-chart')
     .append('div')
     .style('opacity', 0)
     .attr('class', 'tooltip')
     .style('background-color', 'white')
-    .style('border', 'solid')
-    .style('border-width', '2px')
-    .style('border-radius', '5px')
-    .style('padding', '5px');
+    .style('padding', '10px')
+    .style('position', 'absolute')
+    .style('font-size', '12px')
+    .style('color', 'white');
 
-  // Three function that change the tooltip when user hover / move / leave a cell
-  const mouseover = function (d) {
-    Tooltip.style('opacity', 1);
+  const showTooltip = function (event, d) {
+    d3.selectAll('.circle').transition().duration(175).attr('r', 3);
+
+    tooltip.transition().duration(200);
+
+    tooltip
+      .style('opacity', 1)
+      .style('color', '#000')
+      .html('Nodes: ' + d.value + '<br />Run: ' + d.title)
+      .style('left', x(d.date) + 10.5 + 'px')
+      .style('top', 118 + 'px');
+
+    d3.select(this)
+      .transition()
+      .duration(175)
+      .attr('r', 8)
+      .style('cursor', 'pointer');
   };
-  const mousemove = function (d) {
-    Tooltip.html('Exact value: ' + d.value)
-      .style('left', d3.pointer(this)[0] + 70 + 'px')
-      .style('top', d3.pointer(this)[1] + 'px');
-  };
-  const mouseleave = function (d) {
-    Tooltip.style('opacity', 0);
-  };
+
+  // const moveTooltip = function (event, d) {
+  //   console.log('event: ', event);
+  //   tooltip
+  //     .style('left', event.offsetX + 'px')
+  //     .style('top', event.offsetY - 50 + 'px');
+  // };
+  // const hideTooltip = function (event, d) {
+  //   tooltip.transition().duration(200).style('opacity', 0);
+  // };
 
   // Add the points
-  line
+  svg
     .append('g')
     .selectAll('dot')
     .data(data)
@@ -130,16 +151,15 @@ export const TimelineChart = ({ data }) => {
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', function (d) {
-      return y(d.value);
-    })
-    .attr('r', 2)
+    .attr('cy', height) // OR function (d) { return y(d.value); }
+    .attr('r', 3)
     .attr('stroke', '#69b3a2')
     .attr('stroke-width', 3)
-    .attr('fill', 'white')
-    .on('mouseover', mouseover)
-    .on('mousemove', mousemove)
-    .on('mouseleave', mouseleave);
+    .attr('fill', '#fff')
+    .on('mouseover', showTooltip)
+    .on('click', (event, d) => {
+      showPipeline(d.id);
+    });
 
   // A function that set idleTimeOut to null
   let idleTimeout;
@@ -167,7 +187,7 @@ export const TimelineChart = ({ data }) => {
     xAxis.transition().duration(1000).call(d3.axisBottom(x));
 
     redrawLine(line, 1000, x, y);
-    redrawCircles(line, 1000, x, y);
+    redrawCircles(svg, 1000, x, height);
   }
 
   // If user double click, reinitialize the chart
@@ -181,7 +201,12 @@ export const TimelineChart = ({ data }) => {
     xAxis.transition().duration(0).call(d3.axisBottom(x));
 
     redrawLine(line, 0, x, y);
-    redrawCircles(line, 0, x, y);
+    redrawCircles(svg, 0, x, height);
+  });
+
+  svg.on('click', function () {
+    tooltip.style('opacity', 0);
+    d3.selectAll('.circle').transition().duration(175).attr('r', 3);
   });
 
   return <div id="timeline-chart"></div>;
@@ -205,17 +230,15 @@ function redrawLine(line, duration, x, y) {
     );
 }
 
-function redrawCircles(line, duration, x, y) {
-  line
+function redrawCircles(svg, duration, x, height) {
+  svg
     .selectAll('.circle')
     .transition()
     .duration(duration)
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', function (d) {
-      return y(d.value);
-    });
+    .attr('cy', height);
 }
 
 export default TimelineChart;

@@ -35,3 +35,15 @@
   top: 0;
   width: calc(100vw - 490px);
 }
+
+.tooltip::after {
+  position: absolute;
+  bottom: -10px;
+  left: 10px;
+  content: ' ';
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #fff;
+}
