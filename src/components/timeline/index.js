@@ -1,5 +1,4 @@
 import React from 'react';
-import * as d3 from 'd3';
 import { connect } from 'react-redux';
 import { useQuery } from '@apollo/client';
 import { GET_RUNS } from '../../apollo/queries';
@@ -7,7 +6,6 @@ import TimelineChart from './timeline-chart';
 
 import './timeline.css';
 
-const height = 300;
 const leftArea = 480;
 
 export const Timeline = ({ visible }) => {
@@ -23,7 +21,6 @@ export const Timeline = ({ visible }) => {
 
   const sortedPlotData = plotData.sort((a, b) => a.date - b.date);
 
-  // const width = window.innerWidth - leftArea;
   const transformStyle = {
     transform: `translate(calc(-100% + ${
       window.innerWidth - leftArea
