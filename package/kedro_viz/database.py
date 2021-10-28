@@ -26,21 +26,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Database management layer based on SQLAlchemy"""
 
-Feature: Viz plugin in new project
-    Background:
-        Given I have prepared a config file with example code
+from pathlib import Path
+from typing import Tuple
 
-    Scenario: Execute viz with Kedro 0.16.1
-        Given I have installed kedro version "0.16.1"
-        And I have run a non-interactive kedro new
-        And I have executed the kedro command "install"
-        When I execute the kedro viz command "viz"
-        Then kedro-viz should start successfully
+from sqlalchemy import create_engine
+from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import sessionmaker
 
-    Scenario: Execute viz with latest Kedro
-        Given I have installed kedro version "latest"
-        And I have run a non-interactive kedro new with pandas-iris starter
-        And I have executed the kedro command "install"
-        When I execute the kedro viz command "viz"
-        Then kedro-viz should start successfully
+
+def create_db_engine(
+    session_store_location: Path,
+) -> Tuple[Engine, sessionmaker]:
+    """SQLAlchemy connection to a SQLite DB"""
+    database_url = f"sqlite:///{session_store_location}"
+    engine = create_engine(database_url, connect_args={"check_same_thread": False})
+    session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    return engine, session_local

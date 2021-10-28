@@ -39,7 +39,9 @@ from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader
 
 from kedro_viz import __version__
+from kedro_viz.data_access import data_access_manager
 from kedro_viz.integrations.kedro import telemetry as kedro_telemetry
+from starlette.middleware.cors import CORSMiddleware
 
 from .graphql import router as graphql_router
 from .router import router
@@ -73,7 +75,19 @@ def create_api_app_from_project(
     app = _create_base_api_app()
     app.include_router(router)
     app.include_router(graphql_router)
+    origins = ["*"]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     app.mount("/static", StaticFiles(directory=_HTML_DIR / "static"), name="static")
+
+    @app.on_event("shutdown")
+    def shutdown_event():  # pragma: no cover
+        data_access_manager.db_session.close()
 
     # everytime the server reloads, a new app with a new timestamp will be created.
     # this is used as an etag embedded in the frontend for client to use when making requests.

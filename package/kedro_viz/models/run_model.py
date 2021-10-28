@@ -26,21 +26,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Data model to represent run data from a Kedro Session."""
+# pylint: disable=too-few-public-methods
 
-Feature: Viz plugin in new project
-    Background:
-        Given I have prepared a config file with example code
+from sqlalchemy import Column, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.types import JSON
 
-    Scenario: Execute viz with Kedro 0.16.1
-        Given I have installed kedro version "0.16.1"
-        And I have run a non-interactive kedro new
-        And I have executed the kedro command "install"
-        When I execute the kedro viz command "viz"
-        Then kedro-viz should start successfully
+Base = declarative_base()
 
-    Scenario: Execute viz with latest Kedro
-        Given I have installed kedro version "latest"
-        And I have run a non-interactive kedro new with pandas-iris starter
-        And I have executed the kedro command "install"
-        When I execute the kedro viz command "viz"
-        Then kedro-viz should start successfully
+
+class RunModel(Base):
+    """Data model to represent run data from a Kedro Session."""
+
+    __tablename__ = "runs"
+
+    id = Column(String, primary_key=True, index=True)
+    blob = Column(JSON)
+
+    class Config:
+        """Supports data model to map to ORM objects"""
+
+        orm_mode = True

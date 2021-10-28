@@ -54,6 +54,11 @@ export const getUrl = (type, id) => {
         throw new Error('No node ID provided');
       }
       return [pathRoot, 'nodes', id].join('/');
+    case 'timeline':
+      if (!id) {
+        throw new Error('No timeline ID provided');
+      }
+      return [pathRoot, 'timemachine', id].join('/');
     default:
       throw new Error('Unknown URL type');
   }
