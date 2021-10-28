@@ -31,6 +31,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
@@ -66,10 +67,10 @@ def format_run(run_id: str, run_blob: dict) -> Run:
         notes="",
         timestamp=run_blob["session_id"],
         runCommand=run_blob["cli"]["command_path"],
-        totalNodes=run_blob["total_nodes"],
-        selectedNodes=run_blob["selected_nodes"],
+        totalNodes=run_blob.get("total_nodes"),
+        selectedNodes=run_blob.get("selected_nodes"),
     )
-    tracking_data = RunTrackingData(id=ID(run_id), trackingData=None)
+    tracking_data = get_run_tracking_data(run_id=ID(run_id))
 
     return Run(
         id=ID(run_id),
@@ -130,14 +131,15 @@ def get_run_tracking_data(run_id: ID) -> RunTrackingData:
     ]
     for name, dataset in experiment_datasets:
         file_path = dataset._get_versioned_path(str(run_id))
-        with dataset._fs.open(file_path, **dataset._fs_open_args_load) as fs_file:
-            json_data = json.load(fs_file)
-            tracking_dataset = TrackingDataSet(
-                datasetName=name,
-                datasetType=str(type(dataset)),
-                data=json.dumps(json_data),
-            )
-            all_datasets.append(tracking_dataset)
+        if Path(file_path).is_file():
+            with dataset._fs.open(file_path, **dataset._fs_open_args_load) as fs_file:
+                json_data = json.load(fs_file)
+                tracking_dataset = TrackingDataSet(
+                    datasetName=name,
+                    datasetType=str(type(dataset)),
+                    data=json.dumps(json_data),
+                )
+                all_datasets.append(tracking_dataset)
     return RunTrackingData(id=run_id, trackingData=all_datasets)
 
 
