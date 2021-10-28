@@ -114,8 +114,6 @@ export const TimelineChart = ({ data }) => {
   const showTooltip = function (event, d) {
     d3.selectAll('.circle').transition().duration(175).attr('r', 3);
 
-    tooltip.transition().duration(200);
-
     tooltip
       .html(
         'Nodes: ' +
@@ -124,6 +122,8 @@ export const TimelineChart = ({ data }) => {
           d.title +
           '<br /><button id="show-pipeline">Show pipeline</button>'
       )
+      .transition()
+      .duration(200)
       .style('opacity', 1)
       .style('color', '#000')
       .style('left', x(d.date) + 10.5 + 'px')
@@ -135,16 +135,6 @@ export const TimelineChart = ({ data }) => {
 
     d3.select(this).transition().duration(175).attr('r', 8);
   };
-
-  // const moveTooltip = function (event, d) {
-  //   console.log('event: ', event);
-  //   tooltip
-  //     .style('left', event.offsetX + 'px')
-  //     .style('top', event.offsetY - 50 + 'px');
-  // };
-  // const hideTooltip = function (event, d) {
-  //   tooltip.transition().duration(200).style('opacity', 0);
-  // };
 
   // Add the points
   svg
@@ -174,7 +164,7 @@ export const TimelineChart = ({ data }) => {
   }
 
   // A function that update the chart for given boundaries
-  function updateChart(event, d) {
+  function updateChart(event) {
     // What are the selected boundaries?
     const extent = event.selection;
 
@@ -194,6 +184,8 @@ export const TimelineChart = ({ data }) => {
 
     redrawLine(line, 1000, x, y);
     redrawCircles(svg, 1000, x, height);
+
+    tooltip.style('opacity', 0);
   }
 
   // If user double click, reinitialize the chart
@@ -244,7 +236,8 @@ function redrawCircles(svg, duration, x, height) {
     .attr('cx', function (d) {
       return x(d.date);
     })
-    .attr('cy', height);
+    .attr('cy', height)
+    .attr('r', 3);
 }
 
 export default TimelineChart;

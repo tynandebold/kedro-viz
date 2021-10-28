@@ -36,6 +36,10 @@
   width: calc(100vw - 490px);
 }
 
+.tooltip {
+  top: 0;
+}
+
 .tooltip::after {
   position: absolute;
   bottom: -10px;
