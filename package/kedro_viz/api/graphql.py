@@ -66,8 +66,8 @@ def format_run(run_id: str, run_blob: dict) -> Run:
         notes="",
         timestamp=run_blob["session_id"],
         runCommand=run_blob["cli"]["command_path"],
-        totalNodes=run_blob["total_nodes"],
-        selectedNodes=run_blob["selected_nodes"],
+        totalNodes=run_blob.get("total_nodes"),
+        selectedNodes=run_blob.get("selected_nodes"),
     )
     tracking_data = get_run_tracking_data(run_id=ID(run_id))
 
