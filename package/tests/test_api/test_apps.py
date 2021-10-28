@@ -103,16 +103,17 @@ def test_graphql_run_query():
             query TestQuery($runId: ID!) {
                 run(runId: $runId) {
                     id
-                    bookmark
-                    timestamp
-                    title
                     metadata {
+                        bookmark
+                        timestamp
+                        title
                         author
                         gitBranch
                     }
-                    details {
-                        name
-                        details
+                    trackingData {
+                        trackingData {
+                            datasetName
+                        }
                     }
                 }
             }
@@ -126,11 +127,14 @@ def test_graphql_run_query():
     assert result.errors is None
     assert result.data["run"] == {
         "id": "123",
-        "bookmark": True,
-        "timestamp": "2021-09-08T10:55:36.810Z",
-        "title": "Sprint 5",
-        "metadata": {"author": "author", "gitBranch": "my-branch"},
-        "details": {"details": "{json:details}", "name": "name"},
+        "metadata": {
+            "bookmark": False,
+            "timestamp": "session_id",
+            "title": "",
+            "author": "",
+            "gitBranch": "",
+        },
+        "trackingData": {"trackingData": []},
     }
 
 
@@ -139,9 +143,11 @@ def test_graphql_runs_query():
                 query TestQuery{
                     runs {
                         id
-                        bookmark
-                        timestamp
-                        title
+                        metadata {
+                            bookmark
+                            timestamp
+                            title
+                        }
                     }
                 }
             """
@@ -154,9 +160,7 @@ def test_graphql_runs_query():
     assert result.data["runs"] == [
         {
             "id": "123",
-            "bookmark": True,
-            "timestamp": "2021-09-08T10:55:36.810Z",
-            "title": "Sprint 5",
+            "metadata": {"bookmark": False, "timestamp": "session_id", "title": ""},
         }
     ]
 

@@ -31,15 +31,18 @@
 from __future__ import annotations
 
 import json
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 import strawberry
 from fastapi import APIRouter
 from strawberry import ID
 from strawberry.asgi import GraphQL
 
-from kedro_viz.data_access import data_access_manager
 from kedro_viz.models.run_model import RunModel
+from kedro_viz.data_access import data_access_manager
+
+if TYPE_CHECKING:  # pragma: no cover
+    from kedro.extras.datasets.tracking import JSONDataSet, MetricsDataSet
 
 
 def format_run(run_id: str, run_blob: dict) -> Run:
@@ -120,6 +123,41 @@ def get_all_runs() -> typing.List[RunModelGraphQLType]:
         RunModelGraphQLType(id=kedro_session.id, blob=kedro_session.blob)
         for kedro_session in data_access_manager.db_session.query(RunModel).all()
     ]
+
+
+def get_run_tracking_data(run_id: ID) -> RunTrackingData:
+    # pylint: disable=protected-access,import-outside-toplevel
+    """Get all details for a specific run. Run details contains the data from the
+    tracking MetricsDataSet and JSONDataSet instances that have been logged
+    during that specific `kedro run`.
+
+    Args:
+        run_id:  ID of the run to fetch the details for.
+
+    Returns:
+        RunDetails object
+
+    """
+    from kedro.extras.datasets.tracking import JSONDataSet, MetricsDataSet  # noqa: F811
+
+    all_datasets = []
+    catalog = data_access_manager.catalog.get_catalog()
+    experiment_datasets = [
+        (ds_name, ds_value)
+        for ds_name, ds_value in catalog._data_sets.items()
+        if (isinstance(ds_value, (MetricsDataSet, JSONDataSet)))
+    ]
+    for name, dataset in experiment_datasets:
+        file_path = dataset._get_versioned_path(str(run_id))
+        with dataset._fs.open(file_path, **dataset._fs_open_args_load) as fs_file:
+            json_data = json.load(fs_file)
+            tracking_dataset = TrackingDataSet(
+                datasetName=name,
+                datasetType=str(type(dataset)),
+                data=json.dumps(json_data),
+            )
+            all_datasets.append(tracking_dataset)
+    return RunTrackingData(id=run_id, trackingData=all_datasets)
 
 
 @strawberry.type
