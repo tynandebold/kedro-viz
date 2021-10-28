@@ -10,6 +10,7 @@ import { settings, sidebarWidth } from '../config';
  * @return {object} state
  */
 export const createInitialState = () => ({
+  pipelineId: '',
   chartSize: {},
   flags: Flags.defaults(),
   textLabels: true,

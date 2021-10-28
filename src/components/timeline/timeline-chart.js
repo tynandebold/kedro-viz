@@ -3,11 +3,7 @@ import * as d3 from 'd3';
 
 const leftArea = 480;
 
-export const TimelineChart = ({ data }) => {
-  function showPipeline(id) {
-    console.log(id);
-  }
-
+export const TimelineChart = ({ data, updatePipeline }) => {
   // set the dimensions and margins of the graph
   const margin = { top: 10, right: 30, bottom: 30, left: 30 },
     width = window.innerWidth - leftArea - margin.left - margin.right,
@@ -131,7 +127,7 @@ export const TimelineChart = ({ data }) => {
       .style('top', 101 + 'px');
 
     d3.select('#show-pipeline').on('click', function () {
-      alert(d.id);
+      updatePipeline(d.id);
     });
 
     d3.select(this).transition().duration(175).attr('r', 8);
@@ -153,10 +149,7 @@ export const TimelineChart = ({ data }) => {
     .attr('stroke', '#69b3a2')
     .attr('stroke-width', 3)
     .attr('fill', '#fff')
-    .on('mouseover', showTooltip)
-    .on('click', (event, d) => {
-      showPipeline(d.id);
-    });
+    .on('mouseover', showTooltip);
 
   // A function that set idleTimeOut to null
   let idleTimeout;

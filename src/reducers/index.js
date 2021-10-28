@@ -13,6 +13,7 @@ import {
   RESET_DATA,
   TOGGLE_TEXT_LABELS,
   TOGGLE_THEME,
+  UPDATE_PIPELINE_ID,
   UPDATE_CHART_SIZE,
   UPDATE_ZOOM,
   UPDATE_FONT_LOADED,
@@ -71,6 +72,7 @@ const combinedReducer = combineReducers({
   fontLoaded: createReducer(false, UPDATE_FONT_LOADED, 'fontLoaded'),
   textLabels: createReducer(true, TOGGLE_TEXT_LABELS, 'textLabels'),
   theme: createReducer('dark', TOGGLE_THEME, 'theme'),
+  pipelineId: createReducer('', UPDATE_PIPELINE_ID, 'pipelineId'),
   prettyName: createReducer(true, TOGGLE_PRETTY_NAME, 'prettyName'),
   hoveredParameters: createReducer(
     false,
