@@ -234,6 +234,8 @@ def example_db_dataset(setup_dbconn):
         "package_name": "testsql",
         "project_path": "/Users/Projects/testsql",
         "session_id": "2021-10-21T15.02.12.672Z",
+        "total_nodes": 6,
+        "selected_nodes": 4,
         "cli": {
             "args": [],
             "params": {
@@ -261,6 +263,8 @@ def example_db_dataset(setup_dbconn):
         "package_name": "my_package",
         "project_path": "/Users/Projects/my_package",
         "session_id": "2020-11-17T15.02.12.672Z",
+        "total_nodes": 6,
+        "selected_nodes": 4,
         "cli": {
             "args": [],
             "params": {

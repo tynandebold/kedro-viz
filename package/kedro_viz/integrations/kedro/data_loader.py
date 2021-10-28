@@ -31,7 +31,6 @@ load data from projects created in a range of Kedro versions.
 """
 # pylint: disable=import-outside-toplevel
 # pylint: disable=protected-access
-# pylint: disable=too-many-return-statements
 from pathlib import Path
 from typing import Dict, Optional, Tuple, cast
 
@@ -39,8 +38,6 @@ from kedro import __version__
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from semver import VersionInfo
-
-from kedro_viz.integrations.kedro.sqlite_store import SQLiteStore
 
 KEDRO_VERSION = VersionInfo.parse(__version__)
 
@@ -83,6 +80,7 @@ def load_data(
     if KEDRO_VERSION.match(">=0.17.3"):
         from kedro.framework.project import pipelines
         from kedro.framework.session import KedroSession
+
         from kedro_viz.integrations.kedro.sqlite_store import SQLiteStore
 
         with KedroSession.create(
@@ -99,6 +97,7 @@ def load_data(
 
     if KEDRO_VERSION.match(">=0.17.1"):
         from kedro.framework.session import KedroSession
+
         from kedro_viz.integrations.kedro.sqlite_store import SQLiteStore
 
         with KedroSession.create(
@@ -116,6 +115,7 @@ def load_data(
     if KEDRO_VERSION.match("==0.17.0"):
         from kedro.framework.session import KedroSession
         from kedro.framework.startup import _get_project_metadata
+
         from kedro_viz.integrations.kedro.sqlite_store import SQLiteStore
 
         metadata = _get_project_metadata(project_path)

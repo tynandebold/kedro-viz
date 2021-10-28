@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from unittest import mock
+from unittest.mock import PropertyMock
 
 import pytest
 from kedro.extras.datasets.pandas import CSVDataSet
@@ -35,9 +36,13 @@ from kedro.io.core import generate_timestamp
 from strawberry import ID
 
 from kedro_viz.api.graphql import (
+    Run,
+    RunMetadata,
     RunTrackingData,
     TrackingDataSet,
+    get_run,
     get_run_tracking_data,
+    get_runs,
 )
 from kedro_viz.data_access.managers import DataAccessManager
 
@@ -103,11 +108,6 @@ def test_graphql_run_details_query(
                 ),
             ],
         )
-from unittest.mock import PropertyMock
-
-from strawberry import ID
-
-from kedro_viz.api.graphql import Run, RunMetadata, RunTrackingData, get_run, get_runs
 
 
 def test_graphql_get_run(example_db_dataset):

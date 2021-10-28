@@ -38,8 +38,8 @@ from fastapi import APIRouter
 from strawberry import ID
 from strawberry.asgi import GraphQL
 
-from kedro_viz.models.run_model import RunModel
 from kedro_viz.data_access import data_access_manager
+from kedro_viz.models.run_model import RunModel
 
 if TYPE_CHECKING:  # pragma: no cover
     from kedro.extras.datasets.tracking import JSONDataSet, MetricsDataSet
@@ -66,6 +66,8 @@ def format_run(run_id: str, run_blob: dict) -> Run:
         notes="",
         timestamp=run_blob["session_id"],
         runCommand=run_blob["cli"]["command_path"],
+        totalNodes=run_blob["total_nodes"],
+        selectedNodes=run_blob["selected_nodes"],
     )
     tracking_data = RunTrackingData(id=ID(run_id), trackingData=None)
 
@@ -102,27 +104,6 @@ def get_runs() -> List[Run]:
         run = format_run(run_data.id, json.loads(run_data.blob))
         runs.append(run)
     return runs
-
-
-@strawberry.type
-class RunModelGraphQLType:
-    """RunModel format to return to the frontend"""
-
-    id: str
-    blob: str
-
-
-def get_all_runs() -> typing.List[RunModelGraphQLType]:
-    """Gets all runs from the session store
-
-    Returns:
-        list of Run objects
-
-    """
-    return [
-        RunModelGraphQLType(id=kedro_session.id, blob=kedro_session.blob)
-        for kedro_session in data_access_manager.db_session.query(RunModel).all()
-    ]
 
 
 def get_run_tracking_data(run_id: ID) -> RunTrackingData:
@@ -182,6 +163,8 @@ class RunMetadata:
     bookmark: Optional[bool]
     notes: Optional[str]
     runCommand: Optional[str]
+    totalNodes: Optional[int]
+    selectedNodes: Optional[int]
 
 
 @strawberry.type

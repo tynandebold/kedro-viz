@@ -33,8 +33,11 @@ from unittest.mock import PropertyMock
 
 import pytest
 from fastapi.testclient import TestClient
+from kedro.io import DataCatalog
+from kedro.pipeline import Pipeline
 
 from kedro_viz.api import apps
+from kedro_viz.data_access import DataAccessManager
 from kedro_viz.models.graph import TaskNode
 from kedro_viz.server import populate_data
 
@@ -96,73 +99,6 @@ def example_transcoded_api(
 @pytest.fixture
 def client(example_api):
     yield TestClient(example_api)
-
-
-def test_graphql_run_query():
-    query = """
-            query TestQuery($runId: ID!) {
-                run(runId: $runId) {
-                    id
-                    metadata {
-                        bookmark
-                        timestamp
-                        title
-                        author
-                        gitBranch
-                    }
-                    trackingData {
-                        trackingData {
-                            datasetName
-                        }
-                    }
-                }
-            }
-        """
-
-    result = schema.execute_sync(
-        query,
-        variable_values={"runId": "123"},
-    )
-
-    assert result.errors is None
-    assert result.data["run"] == {
-        "id": "123",
-        "metadata": {
-            "bookmark": False,
-            "timestamp": "session_id",
-            "title": "",
-            "author": "",
-            "gitBranch": "",
-        },
-        "trackingData": {"trackingData": []},
-    }
-
-
-def test_graphql_runs_query():
-    query = """
-                query TestQuery{
-                    runs {
-                        id
-                        metadata {
-                            bookmark
-                            timestamp
-                            title
-                        }
-                    }
-                }
-            """
-
-    result = schema.execute_sync(
-        query,
-    )
-
-    assert result.errors is None
-    assert result.data["runs"] == [
-        {
-            "id": "123",
-            "metadata": {"bookmark": False, "timestamp": "session_id", "title": ""},
-        }
-    ]
 
 
 def assert_nodes_equal(response_nodes, expected_nodes):
@@ -514,25 +450,6 @@ def assert_example_transcoded_data(response_data):
     ]
 
     assert_nodes_equal(response_data.pop("nodes"), expected_nodes)
-
-
-class TestGraphQLEndpoint:
-    def test_graphql_endpoint(self, client, example_db_dataset):
-        with mock.patch(
-            "kedro_viz.data_access.DataAccessManager.db_session",
-            new_callable=PropertyMock,
-        ) as mock_session:
-            mock_session.return_value = example_db_dataset
-            response = client.post("/graphql", json={"query": "{allRuns{id blob}}"})
-        assert response.json() == {
-            "data": {
-                "allRuns": [
-                    {"id": "1534326", "blob": "Hello World 1"},
-                    {"id": "41312339", "blob": "Hello World 2"},
-                ]
-            }
-        }
-
 
 class TestIndexEndpoint:
     def test_index(self, client):
