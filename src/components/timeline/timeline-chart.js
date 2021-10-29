@@ -1,5 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
+import { connect } from 'react-redux';
+import { loadTimelinePipelineData } from '../../actions/pipelines';
 
 const leftArea = 480;
 
@@ -300,4 +302,14 @@ function redrawCircles(svg, duration, x, height) {
     .attr('r', 3);
 }
 
-export default TimelineChart;
+// export default TimelineChart;
+
+export const mapStateToProps = (state) => ({});
+
+export const mapDispatchToProps = (dispatch) => ({
+  updatePipeline: (pipelineId) => {
+    dispatch(loadTimelinePipelineData(pipelineId));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimelineChart);

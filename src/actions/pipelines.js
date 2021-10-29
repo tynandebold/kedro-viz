@@ -46,6 +46,19 @@ export function toggleLoading(loading) {
   };
 }
 
+export const TOGGLE_TIMEMACHINE_PIPELINE = 'TOGGLE_TIMEMACHINE_PIPELINE';
+
+/**
+ * Toggle whether to display the loading spinner
+ * @param {boolean} loading True if pipeline is still loading
+ */
+export function toggleTimeMachinePipeline(pipeline) {
+  return {
+    type: TOGGLE_PIPELINE_LOADING,
+    pipeline,
+  };
+}
+
 /**
  * Determine where to load data from
  * @param {object} pipeline Pipeline state
@@ -134,6 +147,34 @@ export function loadPipelineData(pipelineID) {
       dispatch(toggleLoading(false));
     } else {
       dispatch(updateActivePipeline(pipelineID));
+    }
+  };
+}
+
+/**
+ * update node metadata on selection, loading new data if it has not been previously called
+ * @param {string} nodeID node id of clicked node
+ * @return {function} A promise that resolves when the data is loaded
+ */
+export function loadTimelinePipelineData(pipelineID) {
+  return async function (dispatch, getState) {
+    const { dataSource } = getState();
+
+    dispatch(toggleTimeMachinePipeline(pipelineID));
+
+    if (dataSource === 'json' && pipelineID) {
+      // dispatch(toggleNodeDataLoading(true));
+      dispatch(toggleLoading(true));
+      // Remove the previous graph to show that a new pipeline is being loaded
+      dispatch(toggleGraph(false));
+      const url = getUrl('timemachine', pipelineID);
+      const newState = await loadJsonData(url).then(preparePipelineState);
+      dispatch(updateActivePipeline(pipelineID));
+      // Set active pipeline here rather than dispatching two separate actions,
+      // to improve performance by only requiring one state recalculation
+      newState.pipeline.active = pipelineID;
+      dispatch(resetData(newState));
+      dispatch(toggleLoading(false));
     }
   };
 }
