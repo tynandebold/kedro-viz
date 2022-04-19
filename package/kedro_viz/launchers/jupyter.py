@@ -70,7 +70,7 @@ def _wait_for(
 
 
 def _check_viz_up(port):  # pragma: no cover
-    url = "http://127.0.0.1:{}/".format(port)
+    url = "http://0.0.0.0:{}/".format(port)
     try:
         response = requests.get(url)
     except requests.ConnectionError:
