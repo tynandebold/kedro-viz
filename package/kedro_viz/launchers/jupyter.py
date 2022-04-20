@@ -2,6 +2,7 @@
 from a jupyter notebook.
 """
 # pragma: no cover
+import os
 import logging
 import multiprocessing
 import socket
@@ -134,8 +135,12 @@ def run_viz(port: int = None, line=None, local_ns=None) -> None:
 
     wrapper = """
             <html lang="en"><head></head><body style="width:100; height:100;">
-            <iframe src="http://0.0.0.0:{}/" height=500 width="100%"></iframe>
+            <iframe src="http://127.0.0.1:{}/" height=500 width="100%"></iframe>
             </body></html>""".format(
         port
     )
-    display(HTML(wrapper))
+    if "DATABRICKS_RUNTIME_VERSION" in os.environ:
+        print('Environment is Databrix')
+        return wrapper
+    else:
+        display(HTML(wrapper))
