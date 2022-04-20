@@ -113,7 +113,7 @@ def run_viz(port: int = None, line=None, local_ns=None) -> None:
             https://ipython.readthedocs.io/en/stable/config/custommagics.html
 
     """
-    port = port or 4141  # Default argument doesn't work in Jupyter line magic.
+    port = port or 4142  # Default argument doesn't work in Jupyter line magic.
     port = _allocate_port(start_at=port)
 
     if port in _VIZ_PROCESSES and _VIZ_PROCESSES[port].is_alive():
