@@ -71,7 +71,7 @@ def _wait_for(
 
 
 def _check_viz_up(port):  # pragma: no cover
-    url = "http://0.0.0.0:{}/".format(port)
+    url = "http://127.0.0.1:{}/".format(port)
     try:
         response = requests.get(url)
     except requests.ConnectionError:
@@ -90,7 +90,7 @@ def _allocate_port(start_at: int, end_at: int = 65535) -> int:
     socket.setdefaulttimeout(2.0)  # seconds
     for port in acceptable_ports:  # iterate through all acceptable ports
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            if sock.connect_ex(("0.0.0.0", port)) != 0:  # port is available
+            if sock.connect_ex(("127.0.0.1", port)) != 0:  # port is available
                 return port
 
     raise ValueError(
