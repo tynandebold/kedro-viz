@@ -65,10 +65,11 @@ export const Wrapper = ({ theme, displayGlobalToolbar, app }) => {
               return (
                 <Route path={url}>
                   <iframe
+                    className="iframe-style"
                     src={urls[id]}
-                    title="id"
                     width="100%"
                     height="100%"
+                    frameBorder="0"
                   ></iframe>
                 </Route>
               );

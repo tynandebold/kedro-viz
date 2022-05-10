@@ -8,6 +8,7 @@ export const createInitialPipelineState = () => ({
   app: {
     ids: [],
     urls: {},
+    shortcut: {},
   },
   pipeline: {
     ids: [],
@@ -153,6 +154,7 @@ const addNode = (state) => (node) => {
   if (node.type === 'app') {
     state.app.ids.push(id);
     state.app.urls[id] = node.url;
+    state.app.shortcut[id] = node.shortcut;
   }
 };
 

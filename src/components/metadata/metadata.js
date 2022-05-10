@@ -19,6 +19,7 @@ import { toggleNodeClicked } from '../../actions/nodes';
 import { toggleCode, togglePlotModal } from '../../actions';
 import getShortType from '../../utils/short-type';
 import './styles/metadata.css';
+import customerSegmentation from './customer_segmentation.png';
 
 /**
  * Shows node meta data
@@ -39,7 +40,10 @@ const MetaData = ({
   const isTaskNode = metadata?.type === 'task';
   const isDataNode = metadata?.type === 'data';
   const isParametersNode = metadata?.type === 'parameters';
-  const isMetricsNode = metadata?.datasetType?.includes('MetricsDataSet');
+  const isCustomerSegNode =
+    metadata?.name === 'Customer Segmentation Dashboard';
+  const url = '/' + metadata?.id;
+  const isDashboardNode = metadata?.type === 'dashboard';
   const nodeTypeIcon = getShortType(metadata?.datasetType, metadata?.type);
   const hasPlot = Boolean(metadata?.plot);
   const hasTrackingData = Boolean(metadata?.trackingData);
@@ -180,19 +184,24 @@ const MetaData = ({
                   <CommandCopier command={runCommand} />
                 </MetaDataRow>
               </dl>
-              {hasPlot && (
+              {(hasPlot || isDashboardNode) && (
                 <>
-                  <div
-                    className="pipeline-metadata__plot"
-                    onClick={onExpandPlotClick}
-                  >
-                    <PlotlyChart
-                      data={metadata.plot.data}
-                      layout={metadata.plot.layout}
-                      view="preview"
-                    />
-                  </div>
-                  {!isMetricsNode && (
+                  {hasPlot && (
+                    <div
+                      className="pipeline-metadata__plot"
+                      onClick={onExpandPlotClick}
+                    >
+                      <PlotlyChart
+                        data={metadata.plot.data}
+                        layout={metadata.plot.layout}
+                        view="preview"
+                      />
+                    </div>
+                  )}
+                  {isDashboardNode && isCustomerSegNode && (
+                    <img src={customerSegmentation} />
+                  )}
+                  {!isDashboardNode && (
                     <button
                       className="pipeline-metadata__expand-plot"
                       onClick={onExpandPlotClick}
@@ -203,8 +212,8 @@ const MetaData = ({
                       </span>
                     </button>
                   )}
-                  {isMetricsNode && (
-                    <NavLink exact to={{ pathname: '/experiment-tracking' }}>
+                  {isDashboardNode && (
+                    <NavLink exact to={{ pathname: url }}>
                       <button className="pipeline-metadata__expand-plot">
                         <ExpandIcon className="pipeline-metadata__expand-plot-icon"></ExpandIcon>
                         <span className="pipeline-metadata__expand-plot-text">

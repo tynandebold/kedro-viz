@@ -18,3 +18,14 @@
 .pipeline-title {
   @include screenReaderOnly;
 }
+
+.content-frame {
+  position: relative;
+  left: 80px;
+}
+
+.iframe-style {
+  width: calc(100% - 120px);
+  margin: 0 auto;
+  display: block;
+}
