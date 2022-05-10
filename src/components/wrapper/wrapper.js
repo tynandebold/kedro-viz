@@ -11,6 +11,7 @@ import FlowChartWrapper from '../flowchart-wrapper';
 import ExperimentWrapper from '../experiment-wrapper';
 import SettingsModal from '../settings-modal';
 import UpdateReminder from '../update-reminder';
+import ModelUI from '../model-ui';
 
 import './wrapper.css';
 
@@ -23,6 +24,7 @@ export const Wrapper = ({ displayGlobalToolbar, theme }) => {
     skip: !displayGlobalToolbar,
   });
   const [dismissed, setDismissed] = useState(false);
+  const [dismissedModelUI, setDismissedModelUI] = useState(false);
   const [isOutdated, setIsOutdated] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
 
@@ -56,6 +58,10 @@ export const Wrapper = ({ displayGlobalToolbar, theme }) => {
                 versions={versionData.version}
               />
             )}
+            <ModelUI
+              dismissed={dismissedModelUI}
+              setDismiss={setDismissedModelUI}
+            />
             <Switch>
               <Route exact path={['/', '/flowchart']}>
                 <FlowChartWrapper />
