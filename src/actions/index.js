@@ -234,3 +234,16 @@ export function toggleFocusMode(modularPipeline) {
     modularPipeline,
   };
 }
+
+export const TRIGGER_KEDRO_RUN = 'TRIGGER_KEDRO_RUN';
+
+/**
+ * triggers a kedro run
+ * @param {string} params The selected params for the kedro run
+ */
+export function triggerKedroRun(params) {
+  return {
+    type: TRIGGER_KEDRO_RUN,
+    params,
+  };
+}
