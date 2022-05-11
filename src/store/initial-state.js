@@ -45,7 +45,7 @@ export const createInitialState = () => ({
   zoom: {},
   runConfig: {
     features: ['engines', 'crew'],
-    targetVariable: 'price',
+    target: 'price',
     modelClass: 'sklearn.linear_model.LinearRegression',
     modelEvaluators: 'sklearn.metrics.r2_score',
   },

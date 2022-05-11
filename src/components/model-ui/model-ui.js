@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import LottiePlayer from 'react-lottie';
 import { connect } from 'react-redux';
-import { toggleKedroRun } from '../../actions/kedro-run';
+import {
+  toggleKedroRun,
+  updateFeatureChanges,
+  updateTargetChanges,
+  updateModelEvaluatorChanges,
+  updateModelObjectChanges,
+} from '../../actions/kedro-run';
 import IconButton from '../ui/icon-button';
 import CloseIcon from '../icons/close';
 import { MultipleSelectCheckmarks } from '../ui/checkmarks/checkmarks';
@@ -68,12 +74,24 @@ model_evaluators:
   );
 };
 
-const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
+const ModelUI = ({
+  dismissed,
+  setDismiss,
+  onTriggerKedroRun,
+  runConfig,
+  runLoading,
+  onUpdateFeatureChanges,
+  onUpdateTargetChanges,
+  onUpdateModelEvaluatorChanges,
+  onUpdateModelObjectChanges,
+}) => {
   const [expand, setExpand] = useState(false);
   const [loading, setLoading] = useState(false);
   // multiple choices
   const [feature, setFeature] = useState([]);
   const [target, setTarget] = useState([]);
+
+  console.log('runLoading', runLoading);
 
   // single choice
   const [modelObject, setModelObject] = useState([]);
@@ -84,10 +102,12 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
     const {
       target: { value },
     } = event;
+    console.log('value', value);
     setFeature(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     );
+    onUpdateFeatureChanges(value);
   };
 
   const handleTargetChange = (event) => {
@@ -98,6 +118,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     );
+    onUpdateTargetChanges(value);
   };
 
   const handleModelObjectChange = (event) => {
@@ -108,6 +129,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     );
+    onUpdateModelObjectChanges(value);
   };
 
   const handleModelEvaluatorChange = (event) => {
@@ -118,6 +140,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     );
+    onUpdateModelEvaluatorChanges(value);
   };
 
   const onClickKedroRun = () => {
@@ -197,7 +220,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
           <button className="model-ui-button--run" onClick={onClickKedroRun}>
             Kedro Run
           </button>
-          {loading && <Loading />}
+          {runLoading && <Loading />}
         </div>
       </>
     );
@@ -220,11 +243,24 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
 
 export const mapStateToProps = (state) => ({
   runConfig: state.runConfig,
+  runLoading: state.loading.run,
 });
 
 export const mapDispatchToProps = (dispatch) => ({
   onTriggerKedroRun: (event) => {
     dispatch(toggleKedroRun());
+  },
+  onUpdateFeatureChanges: (value) => {
+    dispatch(updateFeatureChanges(value));
+  },
+  onUpdateTargetChanges: (value) => {
+    dispatch(updateTargetChanges(value));
+  },
+  onUpdateModelEvaluatorChanges: (value) => {
+    dispatch(updateModelEvaluatorChanges(value));
+  },
+  onUpdateModelObjectChanges: (value) => {
+    dispatch(updateModelObjectChanges(value));
   },
 });
 

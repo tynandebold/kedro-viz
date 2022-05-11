@@ -2,6 +2,54 @@ import { getUrl } from '../utils';
 import loadJsonData from '../store/load-data';
 
 /**
+ * update value of features on state
+ * @param {boolean} value value of updated feature changes
+ */
+export const UPDATE_FEATURES_CHANGES = 'UPDATE_FEATURES_CHANGES';
+export function updateFeatureChanges(value) {
+  return {
+    type: UPDATE_FEATURES_CHANGES,
+    value,
+  };
+}
+
+/**
+ * Toggle whether to display the loading spinner when a run is triggered
+ * @param {boolean} value True if runis still loading
+ */
+export const UPDATE_TARGET_CHANGES = 'UPDATE_TARGET_CHANGES';
+export function updateTargetChanges(value) {
+  return {
+    type: UPDATE_TARGET_CHANGES,
+    value,
+  };
+}
+
+/**
+ * Toggle whether to display the loading spinner when a run is triggered
+ * @param {boolean} value True if runis still loading
+ */
+export const UPDATE_MODEL_EVALUATOR_CHANGES = 'UPDATE_MODEL_EVALUATOR_CHANGES';
+export function updateModelEvaluatorChanges(value) {
+  return {
+    type: UPDATE_MODEL_EVALUATOR_CHANGES,
+    value,
+  };
+}
+
+/**
+ * Toggle whether to display the loading spinner when a run is triggered
+ * @param {boolean} value True if runis still loading
+ */
+export const UPDATE_MODEL_OBJECT_CHANGES = 'UPDATE_MODEL_OBJECT_CHANGES';
+export function updateModelObjectChanges(value) {
+  return {
+    type: UPDATE_MODEL_OBJECT_CHANGES,
+    value,
+  };
+}
+
+/**
  * Toggle whether to display the loading spinner when a run is triggered
  * @param {boolean} loading True if runis still loading
  */
@@ -28,21 +76,18 @@ export const getRunUrl = (query) => {
  */
 export function toggleKedroRun() {
   return async function (dispatch, getState) {
-    console.log(getState());
     const { runConfig } = getState();
-    console.log('runConfig', runConfig);
     const { features, targetVariables, modelClass, modelEvaluators } =
       runConfig;
 
     // we need to stitch the queries from the state here
     const query = `features:${features.toString()}, targetVariables:${targetVariables}, modelClass:${modelClass}, modelEvaluators:${modelEvaluators}`;
 
+    console.log('query', query);
+
     dispatch(toggleRunLoading(true));
-
     const url = getRunUrl(query);
-
     await loadJsonData(url).then((data) => {
-      console.log('data', data);
       dispatch(toggleRunLoading(false));
     });
   };
