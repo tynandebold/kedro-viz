@@ -49,14 +49,20 @@ const renderSnippet = (featureList, target, modelObject, modelEvaluator) => {
   return (
     <ReactCodeSinppet
       code={`features:${feature}
+
 target:
   - ${target}
+
 model_class:
   object: ${modelObject}
   instantiate: False
   
 model_evaluators:
-  r2_score:
+  ${
+    modelEvaluator[0] === 'sklearn.metrics.r2_score'
+      ? `r2_score:`
+      : `mean_squared_error:`
+  }
     object: ${modelEvaluator}`}
     />
   );
@@ -104,16 +110,6 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
     );
   };
 
-  // const handleInstantiateChange = (event) => {
-  //   const {
-  //     target: { value },
-  //   } = event;
-  //   setInstantiate(
-  //     // On autofill we get a stringified value.
-  //     typeof value === 'string' ? value.split(',') : value
-  //   );
-  // };
-
   const handleModelEvaluatorChange = (event) => {
     const {
       target: { value },
@@ -125,10 +121,11 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
   };
 
   const onClickKedroRun = () => {
-    onTriggerKedroRun();
     setLoading(true);
-  };
+    onTriggerKedroRun();
 
+    setTimeout(() => setLoading(false), 30000);
+  };
   if (expand) {
     return (
       <>
@@ -165,8 +162,8 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
               multiple
             />
 
-            <div className="model-ui-select-title">3. Model class:</div>
-            <div className="model-ui-select-title">Object:</div>
+            <div className="model-ui-select-title">3. Model class object:</div>
+            {/* <div className="model-ui-select-title">Object:</div> */}
             <MultipleSelectCheckmarks
               values={modelClassObjects}
               selectedValue={modelObject}
@@ -174,8 +171,8 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
               width={400}
               multiple={false}
             />
-            {/* <div className="model-ui-select-title">Instantiate:</div> */}
-            {/* <MultipleSelectCheckmarks
+            {/* <div className="model-ui-select-title">Instantiate:</div>
+            <MultipleSelectCheckmarks
               values={['true', 'false']}
               selectedValue={instantiate}
               onSelect={handleInstantiateChange}
@@ -195,16 +192,12 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
             <div className="model-ui-select-title">
               {renderSnippet(feature, target, modelObject, modelEvaluator)}
             </div>
-
-            <button className="model-ui-button--run" onClick={onClickKedroRun}>
-              KEDRO RUN
-            </button>
-            {loading && <Loading />}
-
-            {/* <button className="kedro" onClick={onTriggerKedroRun}>
-              Trigger Kedro Run
-            </button> */}
           </div>
+
+          <button className="model-ui-button--run" onClick={onClickKedroRun}>
+            Kedro Run
+          </button>
+          {loading && <Loading />}
         </div>
       </>
     );
@@ -212,7 +205,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
 
   return (
     <div className="update-reminder-unexpanded">
-      <p>ModelUI</p>
+      <p>Model UI</p>
       <div className="buttons-container">
         <button className="kedro" onClick={() => setExpand(true)}>
           Expand
