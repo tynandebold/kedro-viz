@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import CommandCopier from '../ui/command-copier/command-copier';
+import { connect } from 'react-redux';
+import { toggleKedroRun } from '../../actions/kedro-run';
 import IconButton from '../ui/icon-button';
 import CloseIcon from '../icons/close';
-import Dropdown from '../ui/dropdown';
 import { MultipleSelectCheckmarks } from '../ui/checkmarks/checkmarks';
 
 import features from './mock-data/features';
@@ -12,9 +12,7 @@ import modelEvaluators from './mock-data/model_evaluators';
 
 import './model-ui.css';
 
-const command = 'pip install -U kedro-viz';
-
-const ModelUI = ({ dismissed, setDismiss }) => {
+const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
   const [expand, setExpand] = useState(false);
   // multiple choices
   const [feature, setFeature] = useState([]);
@@ -24,6 +22,8 @@ const ModelUI = ({ dismissed, setDismiss }) => {
   const [modelObject, setModelObject] = useState([]);
   const [instantiate, setInstantiate] = useState([]);
   const [modelEvaluator, setModelEvaluator] = useState([]);
+
+  const query = `feature: ${feature}, target: ${target}, modelObject: ${modelObject}, instantiate: ${instantiate}, modelEvaluator: ${modelEvaluator}`;
 
   const handleFeaturesChange = (event) => {
     const {
@@ -137,6 +137,10 @@ const ModelUI = ({ dismissed, setDismiss }) => {
               width={400}
               multiple={false}
             />
+
+            <button className="kedro" onClick={onTriggerKedroRun}>
+              Trigger Kedro Run
+            </button>
           </div>
         </div>
       </>
@@ -158,4 +162,12 @@ const ModelUI = ({ dismissed, setDismiss }) => {
   );
 };
 
-export default ModelUI;
+export const mapStateToProps = (state) => ({});
+
+export const mapDispatchToProps = (dispatch) => ({
+  onTriggerKedroRun: (event) => {
+    dispatch(toggleKedroRun());
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModelUI);
