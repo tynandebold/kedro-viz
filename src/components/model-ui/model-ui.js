@@ -62,7 +62,7 @@ model_evaluators:
   );
 };
 
-const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
+const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun, runConfig }) => {
   const [expand, setExpand] = useState(false);
   const [loading, setLoading] = useState(false);
   // multiple choices
@@ -225,7 +225,9 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
   );
 };
 
-export const mapStateToProps = (state) => ({});
+export const mapStateToProps = (state) => ({
+  runConfig: state.runConfig,
+});
 
 export const mapDispatchToProps = (dispatch) => ({
   onTriggerKedroRun: (event) => {
