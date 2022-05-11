@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { toggleSettingsModal, toggleTheme } from '../../actions';
 import ExperimentsIcon from '../icons/experiments';
+import LayerIcon from '../icons/layers';
 import IconButton from '../ui/icon-button';
 import LogoIcon from '../icons/logo';
 import SettingsIcon from '../icons/settings';
@@ -24,7 +25,7 @@ export const GlobalToolbar = ({
   visible,
   app,
 }) => {
-  const { ids } = app;
+  const { ids, urls, shortcut } = app;
   return (
     <>
       <div className="pipeline-global-toolbar">
@@ -55,20 +56,32 @@ export const GlobalToolbar = ({
               icon={ExperimentsIcon}
             />
           </NavLink>
+          <NavLink exact to={{ pathname: '/streamlit' }}>
+            <IconButton
+              ariaLabel={'Streamlit App'}
+              className={
+                'pipeline-menu-button--large pipeline-menu-button--link'
+              }
+              disabled={false}
+              icon={LayerIcon}
+            />
+          </NavLink>
           {ids.map((id) => {
-            const url = '/' + id;
-            return (
-              <NavLink exact to={{ pathname: url }}>
-                <IconButton
-                  ariaLabel={'View your experiments'}
-                  className={
-                    'pipeline-menu-button--large pipeline-menu-button--link'
-                  }
-                  disabled={false}
-                  icon={ExperimentsIcon}
-                />
-              </NavLink>
-            );
+            if (shortcut[id]) {
+              const url = '/' + id;
+              return (
+                <NavLink exact to={{ pathname: url }}>
+                  <IconButton
+                    ariaLabel={'View your experiments'}
+                    className={
+                      'pipeline-menu-button--large pipeline-menu-button--link'
+                    }
+                    disabled={false}
+                    icon={ExperimentsIcon}
+                  />
+                </NavLink>
+              );
+            }
           })}
         </ul>
         <ul className="pipeline-global-control-toolbar kedro">

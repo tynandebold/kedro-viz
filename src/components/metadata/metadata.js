@@ -20,6 +20,8 @@ import { toggleCode, togglePlotModal } from '../../actions';
 import getShortType from '../../utils/short-type';
 import './styles/metadata.css';
 import customerSegmentation from './customer_segmentation.png';
+import xai from './xai.png';
+import eda from './eda.png';
 
 /**
  * Shows node meta data
@@ -42,8 +44,10 @@ const MetaData = ({
   const isParametersNode = metadata?.type === 'parameters';
   const isCustomerSegNode =
     metadata?.name === 'Customer Segmentation Dashboard';
+  const isEdaNode = metadata?.name === 'EDA Dashboard';
+  const isXaiNode = metadata?.name === 'XAI Dashboard';
   const url = '/' + metadata?.id;
-  const isDashboardNode = metadata?.type === 'dashboard';
+  const isAppNode = metadata?.type === 'app';
   const nodeTypeIcon = getShortType(metadata?.datasetType, metadata?.type);
   const hasPlot = Boolean(metadata?.plot);
   const hasTrackingData = Boolean(metadata?.trackingData);
@@ -184,7 +188,7 @@ const MetaData = ({
                   <CommandCopier command={runCommand} />
                 </MetaDataRow>
               </dl>
-              {(hasPlot || isDashboardNode) && (
+              {(hasPlot || isAppNode) && (
                 <>
                   {hasPlot && (
                     <div
@@ -198,10 +202,12 @@ const MetaData = ({
                       />
                     </div>
                   )}
-                  {isDashboardNode && isCustomerSegNode && (
+                  {isAppNode && isCustomerSegNode && (
                     <img src={customerSegmentation} />
                   )}
-                  {!isDashboardNode && (
+                  {isAppNode && isEdaNode && <img src={eda} />}
+                  {isAppNode && isXaiNode && <img src={xai} />}
+                  {!isAppNode && (
                     <button
                       className="pipeline-metadata__expand-plot"
                       onClick={onExpandPlotClick}
@@ -212,7 +218,7 @@ const MetaData = ({
                       </span>
                     </button>
                   )}
-                  {isDashboardNode && (
+                  {isAppNode && (
                     <NavLink exact to={{ pathname: url }}>
                       <button className="pipeline-metadata__expand-plot">
                         <ExpandIcon className="pipeline-metadata__expand-plot-icon"></ExpandIcon>
