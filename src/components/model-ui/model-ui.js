@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import LottiePlayer from 'react-lottie';
 import { connect } from 'react-redux';
 import { toggleKedroRun } from '../../actions/kedro-run';
 import IconButton from '../ui/icon-button';
 import CloseIcon from '../icons/close';
 import { MultipleSelectCheckmarks } from '../ui/checkmarks/checkmarks';
+import ReactCodeSinppet from 'react-code-snippet';
+import animationData from '../lotties/loading.json';
 
 import features from './mock-data/features';
 import targets from './mock-data/targets';
@@ -12,18 +15,64 @@ import modelEvaluators from './mock-data/model_evaluators';
 
 import './model-ui.css';
 
+const options = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
+
+const Loading = () => {
+  return (
+    <div className="loading-wrapper">
+      <LottiePlayer
+        height={250}
+        width={250}
+        isClickToPauseDisabled
+        options={options}
+      />
+    </div>
+  );
+};
+
+const renderSnippet = (featureList, target, modelObject, modelEvaluator) => {
+  const feature =
+    featureList.length > 0
+      ? featureList.map(
+          (each) => `
+  - ${each}`
+        )
+      : `
+  -`;
+  return (
+    <ReactCodeSinppet
+      code={`features:${feature}
+target:
+  - ${target}
+model_class:
+  object: ${modelObject}
+  instantiate: False
+  
+model_evaluators:
+  r2_score:
+    object: ${modelEvaluator}`}
+    />
+  );
+};
+
 const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
   const [expand, setExpand] = useState(false);
+  const [loading, setLoading] = useState(false);
   // multiple choices
   const [feature, setFeature] = useState([]);
   const [target, setTarget] = useState([]);
 
   // single choice
   const [modelObject, setModelObject] = useState([]);
-  const [instantiate, setInstantiate] = useState([]);
+  // const [instantiate, setInstantiate] = useState([]);
   const [modelEvaluator, setModelEvaluator] = useState([]);
-
-  const query = `feature: ${feature}, target: ${target}, modelObject: ${modelObject}, instantiate: ${instantiate}, modelEvaluator: ${modelEvaluator}`;
 
   const handleFeaturesChange = (event) => {
     const {
@@ -55,15 +104,15 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
     );
   };
 
-  const handleInstantiateChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setInstantiate(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
+  // const handleInstantiateChange = (event) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setInstantiate(
+  //     // On autofill we get a stringified value.
+  //     typeof value === 'string' ? value.split(',') : value
+  //   );
+  // };
 
   const handleModelEvaluatorChange = (event) => {
     const {
@@ -75,11 +124,16 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
     );
   };
 
+  const onClickKedroRun = () => {
+    onTriggerKedroRun();
+    setLoading(true);
+  };
+
   if (expand) {
     return (
       <>
         <div className="model-ui-expanded-header">
-          <p>Parameters</p>
+          <p>Model UI</p>
 
           <div className="close-button-container">
             <IconButton
@@ -120,14 +174,14 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
               width={400}
               multiple={false}
             />
-            <div className="model-ui-select-title">Instantiate:</div>
-            <MultipleSelectCheckmarks
+            {/* <div className="model-ui-select-title">Instantiate:</div> */}
+            {/* <MultipleSelectCheckmarks
               values={['true', 'false']}
               selectedValue={instantiate}
               onSelect={handleInstantiateChange}
               width={100}
               multiple={false}
-            />
+            /> */}
 
             <div className="model-ui-select-title">4. Model Evaluators:</div>
             <MultipleSelectCheckmarks
@@ -138,9 +192,18 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
               multiple={false}
             />
 
-            <button className="kedro" onClick={onTriggerKedroRun}>
-              Trigger Kedro Run
+            <div className="model-ui-select-title">
+              {renderSnippet(feature, target, modelObject, modelEvaluator)}
+            </div>
+
+            <button className="model-ui-button--run" onClick={onClickKedroRun}>
+              KEDRO RUN
             </button>
+            {loading && <Loading />}
+
+            {/* <button className="kedro" onClick={onTriggerKedroRun}>
+              Trigger Kedro Run
+            </button> */}
           </div>
         </div>
       </>
@@ -149,7 +212,7 @@ const ModelUI = ({ dismissed, setDismiss, onTriggerKedroRun }) => {
 
   return (
     <div className="update-reminder-unexpanded">
-      <p>Parameters </p>
+      <p>ModelUI</p>
       <div className="buttons-container">
         <button className="kedro" onClick={() => setExpand(true)}>
           Expand
