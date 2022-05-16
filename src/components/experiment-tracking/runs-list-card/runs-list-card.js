@@ -23,11 +23,13 @@ const RunsListCard = ({
   onRunSelection,
   selectedRunIds = [],
   searchValue,
+  newRun,
 }) => {
   const { id, notes, title = null, bookmark, gitSha } = data;
   const [active, setActive] = useState(false);
   const { updateRunDetails } = useUpdateRunDetails();
   const humanReadableTime = toHumanReadableTime(id);
+  const isNewRun = id === newRun;
 
   const isMatchSearchValue = (text) =>
     searchValue ? textMatchesSearch(text, searchValue) : false;
@@ -66,6 +68,7 @@ const RunsListCard = ({
     <div
       className={classnames('kedro', 'runs-list-card', {
         'runs-list-card--active': active,
+        'runs-list-card--isNewRun': isNewRun,
         'runs-list-card--disabled': disableRunSelection && !active,
       })}
       onClick={(e) => onRunsListCardClick(id, e)}

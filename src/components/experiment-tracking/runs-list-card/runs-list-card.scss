@@ -6,6 +6,7 @@
 
 .kui-theme--dark {
   --color-run-list-highlight: #{$color-primary};
+  --color-run-list-newRun: #{darken($color-accent-yellow, 20%)};
 }
 
 .runs-list-card {
@@ -18,6 +19,11 @@
   &--active {
     background: var(--color-run-list-hover);
     box-shadow: -1px 0px 0px inset $color-accent-blue;
+  }
+
+  &--isNewRun {
+    background: var(--color-run-list-newRun);
+    // box-shadow: -1px 0px 0px inset $color-accent-blue;
   }
 
   &--disabled {

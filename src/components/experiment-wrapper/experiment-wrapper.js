@@ -24,6 +24,7 @@ const ExperimentWrapper = ({ theme }) => {
   const [pinnedRun, setPinnedRun] = useState();
   const [selectedRunIds, setSelectedRunIds] = useState([]);
   const [selectedRunData, setSelectedRunData] = useState(null);
+  const [newRun, setNewRun] = useState(null);
   const [showRunDetailsModal, setShowRunDetailsModal] = useState(false);
 
   // Fetch all runs.
@@ -138,6 +139,7 @@ const ExperimentWrapper = ({ theme }) => {
           return prev;
         }
         const newRuns = subscriptionData.data.runsAdded;
+        setNewRun(newRuns[0].id);
 
         return Object.assign({}, prev, {
           runsList: [...newRuns, ...prev.runsList],
@@ -174,6 +176,7 @@ const ExperimentWrapper = ({ theme }) => {
             setSidebarVisible={setIsSidebarVisible}
             showRunDetailsModal={setShowRunDetailsModal}
             sidebarVisible={isSidebarVisible}
+            newRun={newRun}
           />
           {selectedRunIds.length > 0 ? (
             <Details

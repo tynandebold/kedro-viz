@@ -32,6 +32,7 @@ const RunsList = ({
   onToggleComparisonView,
   runData,
   selectedRunIds,
+  newRun,
 }) => {
   const [searchValue, updateSearchValue] = useState('');
 
@@ -74,6 +75,7 @@ const RunsList = ({
                 onRunSelection={onRunSelection}
                 selectedRunIds={selectedRunIds}
                 searchValue={searchValue}
+                newRun={newRun}
               />
             ))}
           </div>
@@ -95,6 +97,7 @@ const RunsList = ({
                 onRunSelection={onRunSelection}
                 selectedRunIds={selectedRunIds}
                 searchValue={searchValue}
+                newRun={newRun}
               />
             ))}
           </div>
