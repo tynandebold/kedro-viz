@@ -20,7 +20,6 @@
   top: 0;
   right: 0;
   bottom: 0;
-  left: $global-toolbar-width;
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -32,7 +31,7 @@
 
   .pipeline-plotly-chart,
   .pipeline-matplotlib-chart {
-    width: calc(98% - 80px - #{$global-toolbar-width});
+    width: calc(98% - 80px);
     height: calc(92% - 80px);
     margin: auto;
   }

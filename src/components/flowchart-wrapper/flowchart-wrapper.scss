@@ -1,8 +1,8 @@
 @import '../../styles/variables';
 @import '../../styles/mixins';
 
-$sidebar-toolbar-width-closed: $sidebar-width-closed + $global-toolbar-width;
-$sidebar-toolbar-width-open: $sidebar-width-open + $global-toolbar-width;
+$sidebar-toolbar-width-closed: $sidebar-width-closed;
+$sidebar-toolbar-width-open: $sidebar-width-open;
 
 .pipeline-wrapper {
   height: 100%;

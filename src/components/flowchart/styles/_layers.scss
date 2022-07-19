@@ -47,10 +47,6 @@
     opacity: 1;
   }
 
-  &--no-global-toolbar {
-    left: -#{$global-toolbar-width};
-  }
-
   @media print {
     display: none;
   }
